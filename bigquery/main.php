@@ -14,11 +14,11 @@ function createAuthorizedClient()
             'GOOGLE_APPLICATION_CREDENTIALS to the path to your .json file.');
     }
     $contents = file_get_contents($json_credentials_path);
-    $json_a = json_decode($contents, true);
+    $json_array = json_decode($contents, true);
     $credentials = new Google_Auth_AssertionCredentials(
-        $json_a['client_email'],
+        $json_array['client_email'],
         [Google_Service_Bigquery::BIGQUERY],
-        $json_a['private_key']
+        $json_array['private_key']
     );
     $client = new Google_client();
     $client->setAssertionCredentials($credentials);
@@ -29,6 +29,12 @@ function createAuthorizedClient()
     return $service;
 }
 
+/**
+ * @param string $querySql
+ * @param Google_Service_Bigquery $bigquery
+ * @param string $projectId
+ * @return mixed
+ */
 function executeQuery($querySql, Google_Service_Bigquery $bigquery,
                       $projectId)
 {
@@ -38,6 +44,9 @@ function executeQuery($querySql, Google_Service_Bigquery $bigquery,
     return $response->getRows();
 }
 
+/**
+ * @param array $rows
+ */
 function printResults($rows)
 {
     echo "\nQuery Results:\n------------\n";
