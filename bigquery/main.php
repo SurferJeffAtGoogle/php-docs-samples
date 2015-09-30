@@ -1,6 +1,6 @@
 <?php
 
-require_once __DIR__.'/vendor/autoload.php';
+require_once __DIR__ . '/vendor/autoload.php';
 
 /**
  * @return Google_Service_Bigquery
@@ -17,7 +17,7 @@ function createAuthorizedClient()
     $json_a = json_decode($contents, true);
     $credentials = new Google_Auth_AssertionCredentials(
         $json_a['client_email'],
-        array(Google_Service_Bigquery::BIGQUERY),
+        [Google_Service_Bigquery::BIGQUERY],
         $json_a['private_key']
     );
     $client = new Google_client();
@@ -29,4 +29,42 @@ function createAuthorizedClient()
     return $service;
 }
 
-$client = createAuthorizedClient();
+function executeQuery($querySql, Google_Service_Bigquery $bigquery,
+                      $projectId)
+{
+    $request = new Google_Service_Bigquery_QueryRequest();
+    $request->setQuery($querySql);
+    $response = $bigquery->jobs->query($projectId, $request);
+    return $response->getRows();
+}
+
+function printResults($rows)
+{
+    echo "\nQuery Results:\n------------\n";
+    foreach ($rows as $row) {
+        foreach ($row['f'] as $field) {
+            printf('%-50s', $field['v']);
+        }
+        printf("\n");
+    }
+}
+
+function main()
+{
+    global $argc, $argv;
+    $bigquery = createAuthorizedClient();
+    $projectId = '';
+    if ($projectId) {
+    } elseif ($argc > 1) {
+        $projectId = $argv[1];
+    } else {
+        echo "Enter the project ID: ";
+        $projectId = trim(fgets(STDIN));
+    }
+    $querySql = 'SELECT TOP(corpus, 10) as title, COUNT(*) as unique_words ' .
+        'FROM [publicdata:samples.shakespeare]';
+    $rows = executeQuery($querySql, $bigquery, $projectId);
+    printResults($rows);
+}
+
+main();
