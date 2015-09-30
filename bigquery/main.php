@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__.'/vendor/autoload.php';
+
 /**
  * @return Google_Service_Bigquery
  * @throws Exception
@@ -11,7 +13,8 @@ function createAuthorizedClient()
         throw new Exception('Set the environment variable ' .
             'GOOGLE_APPLICATION_CREDENTIALS to the path to your .json file.');
     }
-    $json_a = json_decode(file_get_contents($json_credentials_path));
+    $contents = file_get_contents($json_credentials_path);
+    $json_a = json_decode($contents, true);
     $credentials = new Google_Auth_AssertionCredentials(
         $json_a['client_email'],
         array(Google_Service_Bigquery::BIGQUERY),
