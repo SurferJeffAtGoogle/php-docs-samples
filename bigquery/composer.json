@@ -1,14 +1,4 @@
 {
-  "name": "google/bigquery_sample",
-  "description": "Demonstrates how to invoke bigquery from PHP.",
-  "minimum-stability": "stable",
-  "license": "MIT",
-  "authors": [
-    {
-      "name": "Jeffrey Rennie",
-      "email": "rennie@google.com"
-    }
-  ],
   "require": {
     "google/apiclient": "1.1.5"
   }
