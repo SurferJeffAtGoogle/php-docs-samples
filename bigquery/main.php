@@ -3,6 +3,7 @@
 require_once __DIR__ . '/vendor/autoload.php';
 
 /**
+ * Create an authorized client that we will use to invoke BigQuery.
  * @return Google_Service_Bigquery
  * @throws Exception
  */
@@ -20,7 +21,7 @@ function createAuthorizedClient()
         [Google_Service_Bigquery::BIGQUERY],
         $json_array['private_key']
     );
-    $client = new Google_client();
+    $client = new Google_Client();
     $client->setAssertionCredentials($credentials);
     if ($client->getAuth()->isAccessTokenExpired()) {
         $client->getAuth()->refreshTokenWithAssertion();
@@ -29,51 +30,29 @@ function createAuthorizedClient()
     return $service;
 }
 
-/**
- * @param string $querySql
- * @param Google_Service_Bigquery $bigquery
- * @param string $projectId
- * @return mixed
- */
-function executeQuery($querySql, Google_Service_Bigquery $bigquery,
-                      $projectId)
-{
-    $request = new Google_Service_Bigquery_QueryRequest();
-    $request->setQuery($querySql);
-    $response = $bigquery->jobs->query($projectId, $request);
-    return $response->getRows();
+$bigquery = createAuthorizedClient();
+$projectId = '';
+if ($projectId) {
+    // The programmer already set the projectId above.
+} elseif ($argc > 1) {
+    $projectId = $argv[1];
+} else {
+    echo "Enter the project ID: ";
+    $projectId = trim(fgets(STDIN));
 }
 
-/**
- * @param array $rows
- */
-function printResults($rows)
-{
-    echo "\nQuery Results:\n------------\n";
-    foreach ($rows as $row) {
-        foreach ($row['f'] as $field) {
-            printf('%-50s', $field['v']);
-        }
-        printf("\n");
+// Pack a BigQuery request.
+$request = new Google_Service_Bigquery_QueryRequest();
+$request->setQuery('SELECT TOP(corpus, 10) as title, COUNT(*) as unique_words ' .
+    'FROM [publicdata:samples.shakespeare]');
+$response = $bigquery->jobs->query($projectId, $request);
+$rows = $response->getRows();
+
+// Print the results to stdout in a human-readable way.
+echo "\nQuery Results:\n------------\n";
+foreach ($rows as $row) {
+    foreach ($row['f'] as $field) {
+        printf('%-30s', $field['v']);
     }
+    echo "\n";
 }
-
-function main()
-{
-    global $argc, $argv;
-    $bigquery = createAuthorizedClient();
-    $projectId = '';
-    if ($projectId) {
-    } elseif ($argc > 1) {
-        $projectId = $argv[1];
-    } else {
-        echo "Enter the project ID: ";
-        $projectId = trim(fgets(STDIN));
-    }
-    $querySql = 'SELECT TOP(corpus, 10) as title, COUNT(*) as unique_words ' .
-        'FROM [publicdata:samples.shakespeare]';
-    $rows = executeQuery($querySql, $bigquery, $projectId);
-    printResults($rows);
-}
-
-main();
