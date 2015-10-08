@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2015 Google Inc. All Rights Reserved.
  *
@@ -14,20 +15,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__.'/vendor/autoload.php';
 // [START all]
 // [START build_service]
 /**
  * Create an authorized client that we will use to invoke BigQuery.
+ *
  * @return Google_Service_Bigquery
+ *
  * @throws Exception
  */
 function createAuthorizedClient()
 {
     $json_credentials_path = getenv('GOOGLE_APPLICATION_CREDENTIALS');
     if (!$json_credentials_path) {
-        throw new Exception('Set the environment variable ' .
+        throw new Exception('Set the environment variable '.
             'GOOGLE_APPLICATION_CREDENTIALS to the path to your .json file.');
     }
     $contents = file_get_contents($json_credentials_path);
@@ -43,6 +45,7 @@ function createAuthorizedClient()
         $client->getAuth()->refreshTokenWithAssertion();
     }
     $service = new Google_Service_Bigquery($client);
+
     return $service;
 }
 // [END build_service]
@@ -53,14 +56,14 @@ if ($projectId) {
 } elseif ($argc > 1) {
     $projectId = $argv[1];
 } else {
-    echo "Enter the project ID: ";
+    echo 'Enter the project ID: ';
     $projectId = trim(fgets(STDIN));
 }
 
 // [START run_query]
 // Pack a BigQuery request.
 $request = new Google_Service_Bigquery_QueryRequest();
-$request->setQuery('SELECT TOP(corpus, 10) as title, COUNT(*) as unique_words ' .
+$request->setQuery('SELECT TOP(corpus, 10) as title, COUNT(*) as unique_words '.
     'FROM [publicdata:samples.shakespeare]');
 $response = $bigquery->jobs->query($projectId, $request);
 $rows = $response->getRows();
@@ -77,3 +80,4 @@ foreach ($rows as $row) {
 }
 // [END print_results]
 // [END all]
+
