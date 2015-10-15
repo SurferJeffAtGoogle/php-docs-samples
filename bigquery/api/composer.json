@@ -1,5 +1,7 @@
 {
-  // "require": {
-  //   "google/apiclient": "1.1.5"
-  // }
+  "prefer-stable": true,
+  "minimum-stability": "dev",
+  "require": {
+    "google/apiclient": "dev-v2-dev"
+  }
 }

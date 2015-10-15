@@ -15,10 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-// require_once __DIR__.'/vendor/autoload.php';
-
-require_once '/usr/local/google/home/rennie/gitrepos/google-api-php-client/src/Google/autoload.php';
-
+require_once __DIR__.'/vendor/autoload.php';
 // [START all]
 // [START build_service]
 /**
