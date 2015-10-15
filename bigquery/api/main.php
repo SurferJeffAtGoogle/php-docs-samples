@@ -16,6 +16,7 @@
  * limitations under the License.
  */
 require_once __DIR__.'/vendor/autoload.php';
+
 // [START all]
 // [START build_service]
 /**
@@ -29,7 +30,7 @@ function createAuthorizedClient()
 {
     $client = new Google_Client();
     $client->useApplicationDefaultCredentials();
-    $client->setScopes(['Google_Service_Bigquery::BIGQUERY']);
+    $client->setScopes([Google_Service_Bigquery::BIGQUERY]);
     $service = new Google_Service_Bigquery($client);
 
     return $service;
