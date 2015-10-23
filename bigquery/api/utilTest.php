@@ -16,7 +16,7 @@
  */
 require 'util.php';
 
-class UtilTest extends PHPUnit_Framework_TestCase
+class utilTest extends PHPUnit_Framework_TestCase
 {
     protected static $hasCredentials;
     protected static $bigquery;
@@ -37,14 +37,14 @@ class UtilTest extends PHPUnit_Framework_TestCase
         }
     }
 
-    function setUp()
+    public function setUp()
     {
         if (!self::$hasCredentials) {
             $this->markTestSkipped('No application credentials were found.');
         }
     }
 
-    function isShakespeare($rows)
+    public function isShakespeare($rows)
     {
         $foundKingLear = false;
         $foundHamlet = false;
@@ -54,6 +54,7 @@ class UtilTest extends PHPUnit_Framework_TestCase
                 $foundKingLear = $foundKingLear || $field['v'] == 'kinglear';
             }
         }
+
         return $foundHamlet && $foundKingLear;
     }
 
@@ -113,9 +114,10 @@ class UtilTest extends PHPUnit_Framework_TestCase
     public function testListDatasets()
     {
         $datasets = listDatasets(self::$bigquery, self::$projectId);
-        echo 'Datasets for ' . self::$projectId . ':';
-        foreach ($datasets as $dataset)
+        echo 'Datasets for '.self::$projectId.':';
+        foreach ($datasets as $dataset) {
             echo $dataset;
+        }
         echo '';
     }
 
@@ -123,8 +125,9 @@ class UtilTest extends PHPUnit_Framework_TestCase
     {
         $projects = listProjects(self::$bigquery);
         echo 'Projects:';
-        foreach ($projects as $project)
+        foreach ($projects as $project) {
             echo $project;
+        }
         $this->assertGreaterThan(count($projects), 0);
     }
 }

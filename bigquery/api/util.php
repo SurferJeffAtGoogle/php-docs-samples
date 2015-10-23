@@ -65,13 +65,18 @@ function getRows(
             'maxResults' => $rowsPerPage,
         ));
         $rows = $page->getRows();
-        if ($rows) foreach ($rows as $row) yield $row;
+        if ($rows) {
+            foreach ($rows as $row) {
+                yield $row;
+            }
+        }
         $pageToken = $page->getPageToken();
     } while ($pageToken);
 }
 
 /**
  * Use the sychronous API to execute a query.  Returns null if job timed out.
+ *
  * @return array|null
  */
 function syncQuery(
@@ -84,8 +89,10 @@ function syncQuery(
     $request->setQuery($queryString);
     $request->setTimeoutMs($timeout);
     $response = $bigquery->jobs->query($projectId, $request);
-    if (!$response->getJobComplete())
-        return null;
+    if (!$response->getJobComplete()) {
+        return;
+    }
+
     return $response->getRows() ? $response->getRows() : array();
 }
 
@@ -107,6 +114,7 @@ function asyncQuery(
     $config->setQuery($query);
     $job = new Google_Service_Bigquery_Job();
     $job->setConfiguration($config);
+
     return $bigquery->jobs->insert($projectId, $job);
 }
 
@@ -117,6 +125,7 @@ function asyncQuery(
  * @param $projectId
  * @param $jobId
  * @param $intervalMs  How long should we sleep between checks?
+ *
  * @return Google_Service_Bigquery_Job
  */
 function pollJob(
@@ -127,8 +136,9 @@ function pollJob(
 {
     while (true) {
         $job = $bigquery->jobs->get($projectId, $jobId);
-        if ($job->getStatus()->getState() == 'DONE')
+        if ($job->getStatus()->getState() == 'DONE') {
             return $job;
+        }
         usleep(1000 * $intervalMs);
     }
 }
@@ -138,11 +148,13 @@ function pollJob(
  *
  * @param Google_Service_Bigquery $bigquery
  * @param $projectId
+ *
  * @return array
  */
 function listDatasets(Google_Service_Bigquery $bigquery, $projectId)
 {
     $datasets = $bigquery->datasets->listDatasets($projectId);
+
     return $datasets->getDatasets() ? $datasets->getDatasets() : array();
 }
 
@@ -150,11 +162,12 @@ function listDatasets(Google_Service_Bigquery $bigquery, $projectId)
  * List the projects.  Never return null.
  *
  * @param Google_Service_Bigquery $bigquery
+ *
  * @return array
  */
 function listProjects(Google_Service_Bigquery $bigquery)
 {
     $projects = $bigquery->projects->listProjects();
+
     return $projects->getProjects() ? $projects->getProjects() : array();
 }
-
