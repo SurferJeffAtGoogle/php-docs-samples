@@ -121,13 +121,13 @@ class utilTest extends PHPUnit_Framework_TestCase
         echo '';
     }
 
-    public function listProjects()
+    public function testListProjects()
     {
         $projects = listProjects(self::$bigquery);
         echo 'Projects:';
         foreach ($projects as $project) {
-            echo $project;
+            echo $project->getFriendlyName();
         }
-        $this->assertGreaterThan(count($projects), 0);
+        $this->assertGreaterThan(0, count($projects));
     }
 }
