@@ -66,4 +66,65 @@ class UtilTest extends PHPUnit_Framework_TestCase
         );
         $this->assertTrue($this->isShakespeare($rows));
     }
+
+    public function testSyncQueryTimeout()
+    {
+        $rows = SyncQuery(
+            self::$bigquery,
+            self::$projectId,
+            self::$shakespeareQuery,
+            1
+        );
+        $this->assertNull($rows);
+    }
+
+    public function testGetRows()
+    {
+        $request = new Google_Service_Bigquery_QueryRequest();
+        $request->setQuery(self::$shakespeareQuery);
+        $request->setMaxResults(3);
+        $query = self::$bigquery->jobs->query(self::$projectId, $request);
+        $this->assertTrue($query->getJobComplete());
+        $rows = getRows(
+            self::$bigquery,
+            self::$projectId,
+            $query->getJobReference()->getJobId(),
+            3  // Only 3 rows at a time, please.
+        );
+        $this->assertTrue($this->isShakespeare($rows));
+    }
+
+    public function testAsyncQuery()
+    {
+        $job = AsyncQuery(
+            self::$bigquery,
+            self::$projectId,
+            self::$shakespeareQuery
+        );
+        $job = pollJob(self::$bigquery, $job->getJobReference()->getProjectId(),
+            $job->getJobReference()->getJobId(), 2000);
+        $rows = getRows(
+            self::$bigquery,
+            $job->getJobReference()->getProjectId(),
+            $job->getJobReference()->getJobId());
+        $this->assertTrue($this->isShakespeare($rows));
+    }
+
+    public function testListDatasets()
+    {
+        $datasets = listDatasets(self::$bigquery, self::$projectId);
+        echo 'Datasets for ' . self::$projectId . ':';
+        foreach ($datasets as $dataset)
+            echo $dataset;
+        echo '';
+    }
+
+    public function listProjects()
+    {
+        $projects = listProjects(self::$bigquery);
+        echo 'Projects:';
+        foreach ($projects as $project)
+            echo $project;
+        $this->assertGreaterThan(count($projects), 0);
+    }
 }

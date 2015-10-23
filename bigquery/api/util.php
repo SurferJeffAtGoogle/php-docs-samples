@@ -40,16 +40,17 @@ function createAuthorizedClient()
     return $service;
 }
 
-function getPages(Google_Service_Bigquery $bigquery, $projectId, $jobId)
+function getRows(Google_Service_Bigquery $bigquery, $projectId, $jobId,
+    $rowsPerPage = null)
 {
     $pageToken = null;
     do {
         $page = $bigquery->jobs->getQueryResults($projectId, $jobId, array(
-            'pageToken' => $pageToken
+            'pageToken' => $pageToken,
+            'maxResults' => $rowsPerPage,
         ));
         $rows = $page->getRows();
-        if ($rows)
-            yield $rows;
+        if ($rows) foreach ($rows as $row) yield $row;
         $pageToken = $page->getPageToken();
     } while ($pageToken);
 }
@@ -61,7 +62,9 @@ function syncQuery(Google_Service_Bigquery $bigquery, $projectId, $queryString,
     $request->setQuery($queryString);
     $request->setTimeoutMs($timeout);
     $response = $bigquery->jobs->query($projectId, $request);
-    return $response ? $response->getRows() : array();
+    if (!$response->getJobComplete())
+        return null;
+    return $response->getRows() ? $response->getRows() : array();
 }
 
 function asyncQuery(Google_Service_Bigquery $bigquery, $projectId, $queryString,
@@ -71,7 +74,7 @@ function asyncQuery(Google_Service_Bigquery $bigquery, $projectId, $queryString,
     $query->setQuery($queryString);
     $query->setPriority($batch ? 'BATCH' : 'INTERACTIVE');
     $config = new Google_Service_Bigquery_JobConfiguration();
-    $config->setQuery(query);
+    $config->setQuery($query);
     $job = new Google_Service_Bigquery_Job();
     $job->setConfiguration($config);
     return $bigquery->jobs->insert($projectId, $job);
