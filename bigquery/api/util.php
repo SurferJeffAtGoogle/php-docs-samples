@@ -16,6 +16,13 @@
  */
 require_once __DIR__.'/vendor/autoload.php';
 
+/**
+ * Create an authorized client that we will use to invoke BigQuery.
+ *
+ * @return Google_Service_Bigquery
+ *
+ * @throws Exception
+ */
 function createAuthorizedClient()
 {
     $json_credentials_path = getenv('GOOGLE_APPLICATION_CREDENTIALS');
@@ -40,7 +47,15 @@ function createAuthorizedClient()
     return $service;
 }
 
-function getRows(Google_Service_Bigquery $bigquery, $projectId, $jobId,
+/**
+ * Get all the rows, page by page, for a given job.
+ *
+ * @return Generator
+ */
+function getRows(
+    Google_Service_Bigquery $bigquery,
+    $projectId,
+    $jobId,
     $rowsPerPage = null)
 {
     $pageToken = null;
@@ -55,7 +70,14 @@ function getRows(Google_Service_Bigquery $bigquery, $projectId, $jobId,
     } while ($pageToken);
 }
 
-function syncQuery(Google_Service_Bigquery $bigquery, $projectId, $queryString,
+/**
+ * Use the sychronous API to execute a query.  Returns null if job timed out.
+ * @return array|null
+ */
+function syncQuery(
+    Google_Service_Bigquery $bigquery,
+    $projectId,
+    $queryString,
     $timeout = 10000)
 {
     $request = new Google_Service_Bigquery_QueryRequest();
@@ -67,8 +89,16 @@ function syncQuery(Google_Service_Bigquery $bigquery, $projectId, $queryString,
     return $response->getRows() ? $response->getRows() : array();
 }
 
-function asyncQuery(Google_Service_Bigquery $bigquery, $projectId, $queryString,
-                    $batch = false)
+/**
+ * Use the asynchronous API to execute a query.
+ *
+ * @return Google_Service_Bigquery_Job
+ */
+function asyncQuery(
+    Google_Service_Bigquery $bigquery,
+    $projectId,
+    $queryString,
+    $batch = false)
 {
     $query = new Google_Service_Bigquery_JobConfigurationQuery();
     $query->setQuery($queryString);
@@ -80,7 +110,19 @@ function asyncQuery(Google_Service_Bigquery $bigquery, $projectId, $queryString,
     return $bigquery->jobs->insert($projectId, $job);
 }
 
-function pollJob(Google_Service_Bigquery $bigquery, $projectId, $jobId,
+/**
+ * Wait until a job completes.
+ *
+ * @param Google_Service_Bigquery $bigquery
+ * @param $projectId
+ * @param $jobId
+ * @param $intervalMs  How long should we sleep between checks?
+ * @return Google_Service_Bigquery_Job
+ */
+function pollJob(
+    Google_Service_Bigquery $bigquery,
+    $projectId,
+    $jobId,
     $intervalMs)
 {
     while (true) {
@@ -91,12 +133,25 @@ function pollJob(Google_Service_Bigquery $bigquery, $projectId, $jobId,
     }
 }
 
+/**
+ * List the datasets.  Never return null.
+ *
+ * @param Google_Service_Bigquery $bigquery
+ * @param $projectId
+ * @return array
+ */
 function listDatasets(Google_Service_Bigquery $bigquery, $projectId)
 {
     $datasets = $bigquery->datasets->listDatasets($projectId);
     return $datasets->getDatasets() ? $datasets->getDatasets() : array();
 }
 
+/**
+ * List the projects.  Never return null.
+ *
+ * @param Google_Service_Bigquery $bigquery
+ * @return array
+ */
 function listProjects(Google_Service_Bigquery $bigquery)
 {
     $projects = $bigquery->projects->listProjects();
