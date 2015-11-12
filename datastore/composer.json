@@ -12,6 +12,7 @@
     "google/apiclient": "~2.0@RC"
   },
   "require-dev": {
+    "satooshi/php-coveralls": "dev-master",
     "symfony/dom-crawler": "~2.0",
     "symfony/css-selector": "~2.0",
     "symfony/browser-kit": "~2.7"

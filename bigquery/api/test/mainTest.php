@@ -36,7 +36,7 @@ class MainTest extends PHPUnit_Framework_TestCase
         $argc = 2;
         // Capture stdout.
         ob_start();
-        include 'main.php';
+        include __DIR__.'/../main.php';
         $result = ob_get_contents();
         ob_end_clean();
         // Make sure it looks like Shakespeare.

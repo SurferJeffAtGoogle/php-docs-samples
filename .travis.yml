@@ -20,20 +20,23 @@ php:
   - nightly
 
 env:
-  globals:
+  global:
     - GOOGLE_APPLICATION_CREDENTIALS=$TRAVIS_BUILD_DIR/credentials.json
+    - LOGS_DIR=$TRAVIS_BUILD_DIR/build/logs
 
 before_install:
   - php dump_credentials.php
 
-script:
+before_script:
+  - mkdir -p $LOGS_DIR
   - cd bigquery/api
-  - composer install
-  - phpunit mainTest.php
-  - phpunit utilTest.php
-  - cd ../..
-  # run datastore tests
-  - cd datastore
-  - composer install
-  - phpunit test
-  - cd ..
+  - composer install --dev --no-interaction
+  - cd ../../datastore
+  - composer install --dev --no-interaction
+  - cd $TRAVIS_BUILD_DIR
+ 
+script:
+  - phpunit --coverage-clover $LOGS_DIR/clover.xml
+
+after_script:
+  - php datastore/vendor/bin/coveralls -v

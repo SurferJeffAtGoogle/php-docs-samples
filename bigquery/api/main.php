@@ -15,7 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+namespace Google\Cloud\Samples\Bigquery\Main;
 require_once __DIR__.'/vendor/autoload.php';
+use \Google_Auth_AssertionCredentials;
+use \Google_Client;
+use \Google_Service_Bigquery;
+use \Google_Service_Bigquery_QueryRequest;
 // [START all]
 // [START build_service]
 /**

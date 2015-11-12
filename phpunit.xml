@@ -1,0 +1,10 @@
+<phpunit>
+  <testsuites>
+    <testsuite name="bigquery">
+      <directory>bigquery/api/test</directory>
+    </testsuite>
+    <testsuite name="datastore">
+      <directory>datastore/test</directory>
+    </testsuite>
+  </testsuites>
+</phpunit>

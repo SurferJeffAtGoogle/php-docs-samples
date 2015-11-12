@@ -1,4 +1,12 @@
 {
+  "autoload": {
+    "psr-4": {
+      "Google\\Cloud\\Samples\\Bigquery\\": "src"
+    }
+  },
+  "require-dev": {
+    "satooshi/php-coveralls": "dev-master"
+  },
   "require": {
     "google/apiclient": "1.1.5"
   }
