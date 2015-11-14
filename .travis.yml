@@ -29,14 +29,15 @@ before_install:
 
 before_script:
   - mkdir -p $LOGS_DIR
-  - cd bigquery/api
-  - composer install --dev --no-interaction
-  - cd ../../datastore
-  - composer install --dev --no-interaction
-  - cd $TRAVIS_BUILD_DIR
- 
+
 script:
-  - phpunit --coverage-clover $LOGS_DIR/clover.xml
+  - cd $TRAVIS_BUILD_DIR/bigquery/api
+  - composer install --dev --no-interaction
+  - phpunit --coverage-clover $LOGS_DIR/bigquery.clover.xml test
+  - cd $TRAVIS_BUILD_DIR/datastore
+  - composer install --dev --no-interaction
+  - phpunit --coverage-clover $LOGS_DIR/datastore.clover.xml test
 
 after_script:
+  - cd $TRAVIS_BUILD_DIR
   - php datastore/vendor/bin/coveralls -v
