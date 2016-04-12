@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+# [START get_current_user]
 use google\appengine\api\users\User;
 use google\appengine\api\users\UserService;
 use Silex\Application;
@@ -34,5 +35,6 @@ $app->get('/', function () use ($app) {
             UserService::createLoginUrl('/'));
     }
 });
+# [END get_current_user]
 
 return $app;
