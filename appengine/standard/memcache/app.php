@@ -16,38 +16,45 @@
  */
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
 
 require_once __DIR__ . '/functions.php';
 
 // create the Silex application
 $app = new Application();
 
-$app->get('/', function () use ($app) {
-    if ($app['mailgun.domain'] == 'MAILGUN_DOMAIN_NAME') {
-        return 'set your mailgun domain and API key in <code>index.php</code>';
-    }
-    return <<<EOF
-<!doctype html>
+// Simple HTTP GET and PUT operators.
+$app->get('/', function() {
+    static $message = <<<EOT
 <html><body>
-<form method="POST">
-<input type="text" name="recipient" placeholder="Enter recipient email">
-<input type="submit" name="submit" value="simple">
-<input type="submit" name="submit" value="complex">
-</form>
+<p>A simple REST server that stores and retrieves values from memcache.
+<p>GET and PUT to<br>
+<a href="/memcache">/memcache</a>
+<a href="/memcached">/memcached</a>
 </body></html>
-EOF;
+EOT;
 });
 
-$app->post('/', function () use ($app) {
-    /** @var Symfony\Component\HttpFoundation\Request $request */
-    $request = $app['request'];
-    $recipient = $request->get('recipient');
-    $action = $request->get('submit');
-    $sendFunction = sprintf('send%sMessage', ucfirst($action));
+$app->get('/memcache/{key}', function ($key) {
+    $memcache = new Memcache;
+    return $memcache->get($key);
+});
 
-    $sendFunction($recipient, $app['mailgun.domain'], $app['mailgun.api_key']);
+$app->put('/memcache/{key}', function ($key, Request $request) {
+    $memcache = new Memcache;
+    $value = $request->getContent();
+    return $memcache->set($key, $value);
+});
 
-    return ucfirst($action . ' email sent');
+$app->get('/memcached/{key}', function ($key) {
+    $memcache = new Memcached;
+    return $memcache->get($key);
+});
+
+$app->put('/memcached/{key}', function ($key, Request $request) {
+    $memcache = new Memcached;
+    $value = $request->getContent();
+    return $memcache->set($key, $value);
 });
 
 return $app;
