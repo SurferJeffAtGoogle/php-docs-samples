@@ -18,8 +18,6 @@
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 
-require_once __DIR__ . '/functions.php';
-
 // create the Silex application
 $app = new Application();
 
@@ -33,6 +31,7 @@ $app->get('/', function() {
 <a href="/memcached">/memcached</a>
 </body></html>
 EOT;
+    return $message;
 });
 
 $app->get('/memcache/{key}', function ($key) {
