@@ -23,31 +23,7 @@ require_once __DIR__ . '/functions.php';
 $app = new Application();
 
 $app->get('/', function () use ($app) {
-    if ($app['mailgun.domain'] == 'MAILGUN_DOMAIN_NAME') {
-        return 'set your mailgun domain and API key in <code>index.php</code>';
-    }
-    return <<<EOF
-<!doctype html>
-<html><body>
-<form method="POST">
-<input type="text" name="recipient" placeholder="Enter recipient email">
-<input type="submit" name="submit" value="simple">
-<input type="submit" name="submit" value="complex">
-</form>
-</body></html>
-EOF;
-});
-
-$app->post('/', function () use ($app) {
-    /** @var Symfony\Component\HttpFoundation\Request $request */
-    $request = $app['request'];
-    $recipient = $request->get('recipient');
-    $action = $request->get('submit');
-    $sendFunction = sprintf('send%sMessage', ucfirst($action));
-
-    $sendFunction($recipient, $app['mailgun.domain'], $app['mailgun.api_key']);
-
-    return ucfirst($action . ' email sent');
+    return getGreeting();
 });
 
 return $app;

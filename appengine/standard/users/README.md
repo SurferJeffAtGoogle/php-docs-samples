@@ -1,14 +1,6 @@
-# Mailgun & Google App Engine
+# Users & Google App Engine
 
-This sample application demonstrates how to use [Mailgun with Google App Engine](https://cloud.google.com/appengine/docs/php/mail/).
-
-## Setup
-
-Before running this sample:
-
-1. You will need a [Mailgun account](http://www.mailgun.com/google).
-2. Update `MAILGUN_DOMAIN` and `MAILGUN_API_KEY` in `index.php` to match your
-   Mailgun credentials. You can use your account's sandbox domain.
+This sample application demonstrates how to use Google App Engine's users API.
 
 ## Prerequisites
 
@@ -18,18 +10,6 @@ Before running this sample:
 ```sh
 composer install
 ```
-
-## Run locally
-
-you can run locally using PHP's built-in web server:
-
-```sh
-cd php-docs-samples/appengine/standard/mailgun
-php -S localhost:8080
-```
-
-Now you can view the app running at [http://localhost:8080](http://localhost:8080)
-in your browser.
 
 ## Deploy to App Engine
 
