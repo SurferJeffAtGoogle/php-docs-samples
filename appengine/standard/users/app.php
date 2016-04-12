@@ -15,15 +15,24 @@
  * limitations under the License.
  */
 
+use google\appengine\api\users\User;
+use google\appengine\api\users\UserService;
 use Silex\Application;
-
-require_once __DIR__ . '/functions.php';
 
 // create the Silex application
 $app = new Application();
 
 $app->get('/', function () use ($app) {
-    return getGreeting();
+    $user = UserService::getCurrentUser();
+
+    if (isset($user)) {
+        return sprintf('Welcome, %s! (<a href="%s">sign out</a>)',
+            $user->getNickname(),
+            UserService::createLogoutUrl('/'));
+    } else {
+        return sprintf('<a href="%s">Sign in or register</a>',
+            UserService::createLoginUrl('/'));
+    }
 });
 
 return $app;
