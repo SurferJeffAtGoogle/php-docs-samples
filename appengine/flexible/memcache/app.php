@@ -24,8 +24,6 @@ $app = new Application();
 $app->register(new TwigServiceProvider());
 $app['twig.path'] = [ __DIR__ ];
 
-$app->get('phpinfo', phpinfo);
-
 $app->get('/', function (Application $app, Request $request) {
     /** @var Twig_Environment $twig */
     $twig = $app['twig'];
@@ -81,5 +79,7 @@ $app->put('/memcached/{key}', function ($key, Request $request) {
     return $memcache->set($key, $value);
     # [END memcached_put]
 });
+
+$app->get('/phpinfo', function() { return phpinfo(); });
 
 return $app;
