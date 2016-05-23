@@ -23,5 +23,5 @@ $app = require __DIR__ . '../app.php';
 
 // Run the app!
 // use "gcloud preview app deploy"
-$app['debug'] = false;
+$app['debug'] = true;
 $app->run();

@@ -24,7 +24,7 @@ $app = new Application();
 $app->register(new TwigServiceProvider());
 $app['twig.path'] = [ __DIR__ ];
 
-$app->get('phpinfo', phpinfo());
+$app->get('phpinfo', phpinfo);
 
 $app->get('/', function (Application $app, Request $request) {
     /** @var Twig_Environment $twig */
