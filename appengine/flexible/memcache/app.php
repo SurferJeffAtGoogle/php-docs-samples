@@ -33,6 +33,8 @@ function addServer(Memcached $memcached) {
     return $memcached;
 }
 
+$memcached = addServer(new Memcached());
+
 $app->get('/vars', function() {
     $vars = array('MEMCACHE_PORT_11211_TCP_ADDR',
         'MEMCACHE_PORT_11211_TCP_PORT');
@@ -50,56 +52,59 @@ $app->get('/vars', function() {
 $app->get('/', function (Application $app, Request $request) {
     /** @var Twig_Environment $twig */
     $twig = $app['twig'];
-    $memcache = addServer(new Memcached);
+    global $memcached;
     return $twig->render('memcache.html.twig', [
-        'who' => $memcache->get('who'),
-        'count' => $memcache->get('count'),
+        'who' => $memcached->get('who'),
+        'count' => $memcached->get('count'),
         'host' => $request->getHost(),
+    ]);
+});
+
+$app->post('/reset', function(Application $app, Request $request) {
+    /** @var Twig_Environment $twig */
+    $twig = $app['twig'];
+    global $memcached;
+    $memcached->delete('who');
+    $memcached->set('count', 0);
+    return $twig->render('memcache.html.twig', [
+        'host' => $request->getHost(),
+        'count' => 0,
+        'who' => '',
     ]);
 });
 
 $app->post('/', function (Application $app, Request $request) {
     /** @var Twig_Environment $twig */
     $twig = $app['twig'];
+    global $memcached;
     # [START who_count]
-    $memcache = addServer(new Memcached);
-    $memcache->set('who', $request->get('who'));
+    $memcached->set('who', $request->get('who'));
+    $count = $memcached->increment('count');
+    if (FALSE === $count) {
+        // Potential race condition.  Use binary protocol to avoid.
+        $memcached->set('count', 0);
+        $count = 0;
+    }
     return $twig->render('memcache.html.twig', [
         'who' => $request->get('who'),
-        'count' => $memcache->increment('count', 1, 0),
+        'count' => $count,
         'host' => $request->getHost(),
     ]);
     # [END who_count]
 });
 
-// Simple HTTP GET and PUT operators.
-$app->get('/memcache/{key}', function ($key) {
-    # [START memcache_get]
-    $memcache = addServer(new Memcache);
-    return $memcache->get($key);
-    # [END memcache_get]
-});
-
-$app->put('/memcache/{key}', function ($key, Request $request) {
-    # [START memcache_put]
-    $memcache = addServer(new Memcache);
-    $value = $request->getContent();
-    return $memcache->set($key, $value);
-    # [END memcache_put]
-});
-
 $app->get('/memcached/{key}', function ($key) {
     # [START memcached_get]
-    $memcache = addServer(new Memcached);
-    return $memcache->get($key);
+    global $memcached;
+    return $memcached->get($key);
     # [END memcached_get]
 });
 
 $app->put('/memcached/{key}', function ($key, Request $request) {
     # [START memcached_put]
-    $memcache = addServer(new Memcached);
+    global $memcached;
     $value = $request->getContent();
-    return $memcache->set($key, $value);
+    return $memcached->set($key, $value);
     # [END memcached_put]
 });
 
