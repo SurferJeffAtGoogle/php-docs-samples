@@ -24,16 +24,14 @@ use Symfony\Component\HttpFoundation\Response;
 $app = new Application();
 $app->register(new TwigServiceProvider());
 $app['twig.path'] = [ __DIR__ ];
-
-function addServer(Memcached $memcached) {
+$app['memcached'] = function() {
     $addr = getenv('MEMCACHE_PORT_11211_TCP_ADDR');
     $port = (int) getenv('MEMCACHE_PORT_11211_TCP_PORT');
+    $memcached = new Memcached;
     if (!$memcached->addServer($addr, $port))
         throw new Exception("Failed to add server $addr:$port");
     return $memcached;
-}
-
-$memcached = addServer(new Memcached());
+};
 
 $app->get('/vars', function() {
     $vars = array('MEMCACHE_PORT_11211_TCP_ADDR',
@@ -52,22 +50,24 @@ $app->get('/vars', function() {
 $app->get('/', function (Application $app, Request $request) {
     /** @var Twig_Environment $twig */
     $twig = $app['twig'];
-    global $memcached;
+    /** @var Memcached $memcached */
+    $memcached = $app['memcached'];
     return $twig->render('memcache.html.twig', [
         'who' => $memcached->get('who'),
         'count' => $memcached->get('count'),
-        'host' => $request->getHost(),
+        'host' => $request->getHttpHost(),
     ]);
 });
 
 $app->post('/reset', function(Application $app, Request $request) {
     /** @var Twig_Environment $twig */
     $twig = $app['twig'];
-    global $memcached;
+    /** @var Memcached $memcached */
+    $memcached = $app['memcached'];
     $memcached->delete('who');
     $memcached->set('count', 0);
     return $twig->render('memcache.html.twig', [
-        'host' => $request->getHost(),
+        'host' => $request->getHttpHost(),
         'count' => 0,
         'who' => '',
     ]);
@@ -76,8 +76,8 @@ $app->post('/reset', function(Application $app, Request $request) {
 $app->post('/', function (Application $app, Request $request) {
     /** @var Twig_Environment $twig */
     $twig = $app['twig'];
-    global $memcached;
-    # [START who_count]
+    /** @var Memcached $memcached */
+    $memcached = $app['memcached'];
     $memcached->set('who', $request->get('who'));
     $count = $memcached->increment('count');
     if (FALSE === $count) {
@@ -88,24 +88,21 @@ $app->post('/', function (Application $app, Request $request) {
     return $twig->render('memcache.html.twig', [
         'who' => $request->get('who'),
         'count' => $count,
-        'host' => $request->getHost(),
+        'host' => $request->getHttpHost(),
     ]);
-    # [END who_count]
 });
 
-$app->get('/memcached/{key}', function ($key) {
-    # [START memcached_get]
-    global $memcached;
+$app->get('/memcached/{key}', function (Application $app, $key) {
+    /** @var Memcached $memcached */
+    $memcached = $app['memcached'];
     return $memcached->get($key);
-    # [END memcached_get]
 });
 
-$app->put('/memcached/{key}', function ($key, Request $request) {
-    # [START memcached_put]
-    global $memcached;
+$app->put('/memcached/{key}', function (Application $app, $key, Request $request) {
+    /** @var Memcached $memcached */
+    $memcached = $app['memcached'];
     $value = $request->getContent();
     return $memcached->set($key, $value);
-    # [END memcached_put]
 });
 
 return $app;
