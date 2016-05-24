@@ -1,4 +1,4 @@
-# Memcache and Google App Engine
+# Memcache and Google App Engine Flexible Environment
 
 This sample application demonstrates how to use memcache with Google App Engine.
 

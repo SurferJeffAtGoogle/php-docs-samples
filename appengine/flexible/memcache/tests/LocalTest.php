@@ -16,27 +16,22 @@
  */
 namespace Google\Cloud\Test;
 
-use Google\Cloud\TestUtils\AppEngineDeploymentTrait;
+use Google\Cloud\TestUtils\ExecuteCommandTrait;
+use Symfony\Component\Yaml\Yaml;
+use Monolog\Logger;
+use GuzzleHttp\Client;
 
-class DeployTest extends \PHPUnit_Framework_TestCase
+class LocalTest extends \PHPUnit_Framework_TestCase
 {
-    use AppEngineDeploymentTrait;
-
     public function testIndex()
     {
         // Access the modules app top page.
-        $resp = $this->client->get('');
+        $resp = $this->client->get('/');
         $this->assertEquals('200', $resp->getStatusCode(),
                             'top page status code');
 
         // Use a random key to avoid colliding with simultaneous tests.
         $key = rand(0, 1000);
-
-        // Test the /memcache REST API.
-        $this->put("/memcache/test$key", "sour");
-        $this->assertEquals("sour", $this->get("/memcache/test$key"));
-        $this->put("/memcache/test$key", "sweet");
-        $this->assertEquals("sweet", $this->get("/memcache/test$key"));
 
         // Test the /memcached REST API.
         $this->put("/memcached/test$key", "sour");

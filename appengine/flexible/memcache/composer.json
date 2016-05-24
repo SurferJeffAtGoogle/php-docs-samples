@@ -6,6 +6,8 @@
     "require-dev": {
         "google/cloud-tools": "dev-master",
         "phpunit/phpunit": "~4",
-        "symfony/browser-kit": "^3.0"
+        "symfony/browser-kit": "^3.0",
+        "monolog/monolog": "^1.19",
+        "guzzlehttp/guzzle": "^6.2"
     }
 }
