@@ -25,17 +25,18 @@ use Symfony\Component\HttpFoundation\Response;
 $app = new Application();
 $app->register(new TwigServiceProvider());
 $app['twig.path'] = [ __DIR__ ];
-$app['memcached'] = function() {
+$app['memcached'] = function () {
     $addr = getenv('MEMCACHE_PORT_11211_TCP_ADDR');
     $port = (int) getenv('MEMCACHE_PORT_11211_TCP_PORT');
     $memcached = new Memcached;
-    if (!$memcached->addServer($addr, $port))
+    if (!$memcached->addServer($addr, $port)) {
         throw new Exception("Failed to add server $addr:$port");
+    }
     return $memcached;
 };
 # [END memcached]
 
-$app->get('/vars', function() {
+$app->get('/vars', function () {
     $vars = array('MEMCACHE_PORT_11211_TCP_ADDR',
         'MEMCACHE_PORT_11211_TCP_PORT');
     $lines = array();
@@ -61,7 +62,7 @@ $app->get('/', function (Application $app, Request $request) {
     ]);
 });
 
-$app->post('/reset', function(Application $app, Request $request) {
+$app->post('/reset', function (Application $app, Request $request) {
     /** @var Twig_Environment $twig */
     $twig = $app['twig'];
     /** @var Memcached $memcached */
@@ -82,7 +83,7 @@ $app->post('/', function (Application $app, Request $request) {
     $memcached = $app['memcached'];
     $memcached->set('who', $request->get('who'));
     $count = $memcached->increment('count');
-    if (FALSE === $count) {
+    if (false === $count) {
         // Potential race condition.  Use binary protocol to avoid.
         $memcached->set('count', 0);
         $count = 0;

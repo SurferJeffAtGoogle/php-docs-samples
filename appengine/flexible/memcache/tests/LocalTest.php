@@ -16,9 +16,6 @@
  */
 namespace Google\Cloud\Test;
 
-use Google\Cloud\TestUtils\ExecuteCommandTrait;
-use Symfony\Component\Yaml\Yaml;
-use Monolog\Logger;
 use GuzzleHttp\Client;
 
 class LocalTest extends \PHPUnit_Framework_TestCase
