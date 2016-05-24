@@ -33,6 +33,11 @@ env:
     - PATH=${HOME}/google-cloud-sdk/bin:${PATH}
     - PHP_CGI_PATH=/home/travis/.phpenv/shims/php-cgi
     - TEST_BUILD_DIR=$TRAVIS_BUILD_DIR
+    - MEMCACHE_PORT_11211_TCP_ADDR=localhost
+    - MEMCACHE_PORT_11211_TCP_PORT=11211
+
+services:
+  - memcached
 
 before_install:
   - pushd ${HOME}
