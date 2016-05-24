@@ -15,6 +15,7 @@
  * limitations under the License.
  */
 
+# [START memcached]
 use Silex\Application;
 use Silex\Provider\TwigServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
@@ -32,6 +33,7 @@ $app['memcached'] = function() {
         throw new Exception("Failed to add server $addr:$port");
     return $memcached;
 };
+# [END memcached]
 
 $app->get('/vars', function() {
     $vars = array('MEMCACHE_PORT_11211_TCP_ADDR',
@@ -92,6 +94,7 @@ $app->post('/', function (Application $app, Request $request) {
     ]);
 });
 
+# [START memcached]
 $app->get('/memcached/{key}', function (Application $app, $key) {
     /** @var Memcached $memcached */
     $memcached = $app['memcached'];
@@ -104,5 +107,6 @@ $app->put('/memcached/{key}', function (Application $app, $key, Request $request
     $value = $request->getContent();
     return $memcached->set($key, $value);
 });
+# [END memcached]
 
 return $app;
