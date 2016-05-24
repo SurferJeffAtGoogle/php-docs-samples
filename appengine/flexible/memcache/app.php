@@ -27,7 +27,7 @@ $app['twig.path'] = [ __DIR__ ];
 
 function addServer(Memcached $memcached) {
     $addr = getenv('MEMCACHE_PORT_11211_TCP_ADDR');
-    $port = getenv('MEMCACHE_PORT_11211_TCP_PORT');
+    $port = (int) getenv('MEMCACHE_PORT_11211_TCP_PORT');
     if (!$memcached->addServer($addr, $port))
         throw new Exception("Failed to add server $addr:$port");
     return $memcached;
