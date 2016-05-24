@@ -103,6 +103,4 @@ $app->put('/memcached/{key}', function ($key, Request $request) {
     # [END memcached_put]
 });
 
-$app->get('/phpinfo', function() { return phpinfo(); });
-
 return $app;
