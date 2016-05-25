@@ -33,7 +33,7 @@ class DeployTest extends \PHPUnit_Framework_TestCase
     {
         if (is_null(self::$version)) {
             $versionId = getenv('GOOGLE_VERSION_ID') ?: time();
-            self::$version = "symfony-" . $versionId;
+            self::$version = "memcached-" . $versionId;
         }
 
         return self::$version;
@@ -84,7 +84,7 @@ class DeployTest extends \PHPUnit_Framework_TestCase
 
         // move into the target directory
         self::setWorkingDirectory($targetDir);
-        self::createSymfonyProject($targetDir);
+        self::createProject($targetDir);
         self::deploy($projectId, $version, $targetDir);
     }
 
@@ -92,10 +92,6 @@ class DeployTest extends \PHPUnit_Framework_TestCase
     {
         $envVars = [
             'GOOGLE_PROJECT_ID',
-            'SYMFONY_DATABASE_HOST',
-            'SYMFONY_DATABASE_NAME',
-            'SYMFONY_DATABASE_USER',
-            'SYMFONY_DATABASE_PASS',
         ];
         foreach ($envVars as $envVar) {
             if (false === getenv($envVar)) {
@@ -104,38 +100,37 @@ class DeployTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    private static function createSymfonyProject($targetDir)
+    private static function copyDirectory($source, $target)
     {
-        // install
-        $symfonyVersion = 'symfony/framework-standard-edition:^3.0';
-        $cmd = sprintf('composer create-project --no-scripts %s %s', $symfonyVersion, $targetDir);
-        $process = self::createProcess($cmd);
-        $process->setTimeout(300); // 5 minutes
-        self::executeProcess($process);
-
-        // set the config from env vars
-        $installFile = sprintf('%s/app/config/parameters.yml', $targetDir);
-        $config = Yaml::parse(file_get_contents($installFile . '.dist'));
-
-        $configVars = [
-            'database_host' => 'SYMFONY_DATABASE_HOST',
-            'database_name' => 'SYMFONY_DATABASE_NAME',
-            'database_user' => 'SYMFONY_DATABASE_USER',
-            'database_password' => 'SYMFONY_DATABASE_PASS',
-        ];
-
-        foreach ($configVars as $key => $name) {
-            $config['parameters'][$key] = getenv($name);
+        $dir = opendir($source);
+        @mkdir($target);
+        while (false !== ($file = readdir($dir)) ) {
+            if (( $file != '.' ) && ( $file != '..' )) {
+                if (is_dir($source . '/' . $file)) {
+                    self::copyDirectory($source . '/' . $file, $target . '/' . $file);
+                }
+                else {
+                    copy($source . '/' . $file, $target . '/' . $file);
+                }
+            }
         }
+        closedir($dir);
+    }
 
-        file_put_contents($installFile, Yaml::dump($config));
+    private static function copyRecursively($source, $target) {
+        return is_dir($source) ? self::copyDirectory($source, $target)
+            : copy($source, $target);
+    }
 
+    private static function createProject($targetDir)
+    {
         // move the code for the sample to the new drupal installation
-        $files = ['app.yaml', 'php.ini', 'Dockerfile', 'nginx-app.conf'];
+        $files = ['app.yaml', 'nginx-app.conf', 'app.php', 'memcache.html.twig',
+            'vendor', 'web'];
         foreach ($files as $file) {
             $source = sprintf('%s/../%s', __DIR__, $file);
             $target = sprintf('%s/%s', $targetDir, $file);
-            copy($source, $target);
+            self::copyRecursively($source, $target);
         }
 
         // if a service name has been defined, add it to "app.yaml"
@@ -163,7 +158,7 @@ class DeployTest extends \PHPUnit_Framework_TestCase
         self::fail('Deployment failed.');
     }
 
-    public static function tearDownAfterClass()
+    public static function neverTearDownAfterClass()
     {
         for ($i = 0; $i <= 3; $i++) {
             $process = self::createProcess(sprintf(
