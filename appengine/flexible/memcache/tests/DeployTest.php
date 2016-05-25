@@ -26,8 +26,12 @@ class DeployTest extends \PHPUnit_Framework_TestCase
 {
     use ExecuteCommandTrait;
 
+    /** @var GuzzleHttp\Client */
     private $client;
+    /** @var string */
     private static $version;
+    /** @var string */
+    private $baseUri;
 
     private static function getVersion()
     {
@@ -158,7 +162,7 @@ class DeployTest extends \PHPUnit_Framework_TestCase
         self::fail('Deployment failed.');
     }
 
-    public static function neverTearDownAfterClass()
+    public static function tearDownAfterClass()
     {
         for ($i = 0; $i <= 3; $i++) {
             $process = self::createProcess(sprintf(
@@ -178,23 +182,55 @@ class DeployTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $service = self::getServiceName();
-        $url = sprintf('https://%s%s-dot-%s.appspot.com/',
+        $this->baseUri = sprintf('https://%s%s-dot-%s.appspot.com/',
             self::getVersion(),
             $service ? "-dot-$service" : '',
             self::getProjectId());
-        $this->client = new Client(['base_uri' => $url]);
+        $this->client = new Client(['base_uri' => $this->baseUri]);
     }
 
-    public function testHomepage()
+    public function testIndex()
     {
-        // Access the blog top page
+        // Access the modules app top page.
         $resp = $this->client->get('/');
-        $this->assertEquals(
-            '200',
-            $resp->getStatusCode(),
-            'top page status code'
-        );
-        $content = $resp->getBody()->getContents();
-        $this->assertContains('Your application is now ready', $content);
+        $this->assertEquals('200', $resp->getStatusCode(),
+            'top page status code');
+
+        // Use a random key to avoid colliding with simultaneous tests.
+        $key = rand(0, 1000);
+
+        // Test the /memcached REST API.
+        $this->put("/memcached/test$key", "sour");
+        $this->assertEquals("sour", $this->get("/memcached/test$key"));
+        $this->put("/memcached/test$key", "sweet");
+        $this->assertEquals("sweet", $this->get("/memcached/test$key"));
+
+        // Make sure it handles a POST request too, which will increment the
+        // counter.
+        $resp = $this->client->post('/');
+        $this->assertEquals('200', $resp->getStatusCode(),
+            'top page status code');
+    }
+
+    /**
+     * HTTP PUTs the body to the url path.
+     * @param $path string
+     * @param $body string
+     */
+    private function put($path, $body)
+    {
+        $url = join('/', [trim($this->baseUri, '/'), trim($path, '/')]);
+        $request = new \GuzzleHttp\Psr7\Request('PUT', $url, array(), $body);
+        $this->client->send($request);
+    }
+
+    /**
+     * HTTP GETs the url path.
+     * @param $path string
+     * @return string The HTTP Response.
+     */
+    private function get($path)
+    {
+        return $this->client->get($path)->getBody()->getContents();
     }
 }
