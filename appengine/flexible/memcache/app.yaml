@@ -1,5 +1,2 @@
-runtime: php
+runtime: custom
 vm: true
-
-runtime_config:
-  document_root: web
