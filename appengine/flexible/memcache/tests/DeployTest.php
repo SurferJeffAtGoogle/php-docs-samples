@@ -130,7 +130,7 @@ class DeployTest extends \PHPUnit_Framework_TestCase
     {
         // move the code for the sample to the new drupal installation
         $files = ['app.yaml', 'nginx-app.conf', 'app.php', 'memcache.html.twig',
-            'vendor', 'web', 'Dockerfile', '.dockerignore'];
+            'web', 'composer.json'];
         foreach ($files as $file) {
             $source = sprintf('%s/../%s', __DIR__, $file);
             $target = sprintf('%s/%s', $targetDir, $file);
