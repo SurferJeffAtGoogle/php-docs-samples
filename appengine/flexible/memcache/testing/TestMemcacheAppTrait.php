@@ -22,13 +22,13 @@ trait TestMemcacheAppTrait
     public function testIndex()
     {
         // Access the modules app top page.
-        $resp = $this->get('');
+        $resp = $this->client->get('/');
         $this->assertEquals('200', $resp->getStatusCode(),
             'top page status code');
 
         // Make sure it handles a POST request too, which will increment the
         // counter.
-        $resp = $this->post('');
+        $resp = $this->client->post('/');
         $this->assertEquals('200', $resp->getStatusCode(),
             'top page status code');
     }

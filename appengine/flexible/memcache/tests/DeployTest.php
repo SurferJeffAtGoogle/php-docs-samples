@@ -45,14 +45,4 @@ class DeployTest extends \PHPUnit_Framework_TestCase
     {
         return $this->client->get($path)->getBody()->getContents();
     }
-
-    /**
-     * HTTP GETs the url path.
-     * @param $path string
-     * @return string The HTTP Response.
-     */
-    private function post($path)
-    {
-        return $this->client->post($path)->getBody()->getContents();
-    }
 }
