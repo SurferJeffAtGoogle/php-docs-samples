@@ -21,29 +21,7 @@ use Google\Cloud\TestUtils\AppEngineDeploymentTrait;
 class DeployTest extends \PHPUnit_Framework_TestCase
 {
     use AppEngineDeploymentTrait;
-
-    public function testIndex()
-    {
-        // Access the modules app top page.
-        $resp = $this->client->get('');
-        $this->assertEquals('200', $resp->getStatusCode(),
-            'top page status code');
-
-        // Use a random key to avoid colliding with simultaneous tests.
-        $key = rand(0, 1000);
-
-        // Test the /memcached REST API.
-        $this->put("/memcached/test$key", "sour");
-        $this->assertEquals("sour", $this->get("/memcached/test$key"));
-        $this->put("/memcached/test$key", "sweet");
-        $this->assertEquals("sweet", $this->get("/memcached/test$key"));
-
-        // Make sure it handles a POST request too, which will increment the
-        // counter.
-        $resp = $this->client->post('');
-        $this->assertEquals('200', $resp->getStatusCode(),
-            'top page status code');
-    }
+    use TestMemcacheAppTrait;
 
     /**
      * HTTP PUTs the body to the url path.
@@ -66,5 +44,15 @@ class DeployTest extends \PHPUnit_Framework_TestCase
     private function get($path)
     {
         return $this->client->get($path)->getBody()->getContents();
+    }
+
+    /**
+     * HTTP GETs the url path.
+     * @param $path string
+     * @return string The HTTP Response.
+     */
+    private function post($path)
+    {
+        return $this->client->post($path)->getBody()->getContents();
     }
 }
