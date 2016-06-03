@@ -25,46 +25,13 @@ class DeployTest extends \PHPUnit_Framework_TestCase
     public function testIndex()
     {
         // Access the modules app top page.
-        $resp = $this->client->get('');
+        $resp = $this->client->get('/');
         $this->assertEquals('200', $resp->getStatusCode(),
             'top page status code');
 
-        // Use a random key to avoid colliding with simultaneous tests.
-        $key = rand(0, 1000);
-
-        // Test the /memcached REST API.
-        $this->put("/memcached/test$key", "sour");
-        $this->assertEquals("sour", $this->get("/memcached/test$key"));
-        $this->put("/memcached/test$key", "sweet");
-        $this->assertEquals("sweet", $this->get("/memcached/test$key"));
-
-        // Make sure it handles a POST request too, which will increment the
-        // counter.
-        $resp = $this->client->post('');
+        // Access the static web page.
+        $resp = $this->client->get('/static.html');
         $this->assertEquals('200', $resp->getStatusCode(),
-            'top page status code');
-    }
-
-    /**
-     * HTTP PUTs the body to the url path.
-     * @param $path string
-     * @param $body string
-     */
-    private function put($path, $body)
-    {
-        $url = join('/', [trim(self::$gcloudWrapper->getBaseUrl(), '/'),
-            trim($path, '/')]);
-        $request = new \GuzzleHttp\Psr7\Request('PUT', $url, array(), $body);
-        $this->client->send($request);
-    }
-
-    /**
-     * HTTP GETs the url path.
-     * @param $path string
-     * @return string The HTTP Response.
-     */
-    private function get($path)
-    {
-        return $this->client->get($path)->getBody()->getContents();
+            'static page status code');
     }
 }
