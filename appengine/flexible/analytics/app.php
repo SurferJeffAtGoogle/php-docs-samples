@@ -36,19 +36,17 @@ $app->get('/', function (Application $app, Request $request) {
         # Anonymous Client Identifier. Ideally, this should be a UUID that
         # is associated with particular user, device, or browser instance.
         'cid' => '555',
-        't' => 'blackjack',  # Event hit type.
-        'ec' => 'card',  # Event category.
-        'ea' => 'ace',  # Event action.
-        'el' => 'hearts',  # Event label.
+        't' => 'event',  # Event hit type.
+        'ec' => 'Poker',  # Event category.
+        'ea' => 'Royal Flush',  # Event action.
+        'el' => 'Hearts',  # Event label.
         'ev' => 0,  # Event value, must be an integer
     ];
-    $response = $client->request('POST', 'collect', ['form_params' => $form,
-        'proxy' => 'tcp://localhost:8080']);
+    $response = $client->request('POST', 'collect', ['form_params' => $form]);
     return $twig->render('index.html.twig', [
             'base_uri' => $baseUri,
             'response_code' => $response->getStatusCode(),
-            'response_reason' => $response->getReasonPhrase(),
-            'contents' => $response->getBody()->getContents()]);
+            'response_reason' => $response->getReasonPhrase()]);
 });
 
 return $app;
