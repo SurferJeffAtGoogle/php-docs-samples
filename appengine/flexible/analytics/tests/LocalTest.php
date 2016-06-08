@@ -14,24 +14,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Google\Cloud\Test\Memcache;
+namespace Google\Cloud\Test;
 
-use Google\Cloud\TestUtils\AppEngineDeploymentTrait;
+use Silex\WebTestCase;
 
-class DeployTest extends \PHPUnit_Framework_TestCase
+class LocalTest extends WebTestCase
 {
-    use AppEngineDeploymentTrait;
+    public function setUp()
+    {
+        parent::setUp();
+        $this->client = $this->createClient();
+    }
+
+    public function createApplication()
+    {
+        $app = require __DIR__ . '/../app.php';
+        $app['GA_TRACKING_ID'] = 'UA-78971600-1';
+        return $app;
+    }
 
     public function testIndex()
     {
         // Access the modules app top page.
-        $resp = $this->client->get('/');
-        $this->assertEquals('200', $resp->getStatusCode(),
-            'top page status code');
-
-        // Access the static web page.
-        $resp = $this->client->get('/static.html');
-        $this->assertEquals('200', $resp->getStatusCode(),
-            'static page status code');
+        $client = $this->client;
+        $crawler = $client->request('GET', '/');
+        $this->assertTrue($client->getResponse()->isOk());
+        $this->assertEquals(1, $crawler->filter(
+            'html:contains("returned 200")')->count());
     }
 }
