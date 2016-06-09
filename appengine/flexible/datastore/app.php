@@ -28,8 +28,8 @@ $app = new Application();
 $app['datastore'] = function() {
     // Datastore API has intermittent failures, so we set the
     // Google Client to retry in the event of a 503 Backend Error
-    $retryConfig = [ 'retries' => 2 ];
-    $client = new \Google_Client([ 'retry' => $retryConfig ]);
+    $retryConfig = ['retries' => 2 ];
+    $client = new \Google_Client(['retry' => $retryConfig ]);
     $client->setScopes([
         Google_Service_Datastore::CLOUD_PLATFORM,
         Google_Service_Datastore::DATASTORE,
@@ -48,10 +48,11 @@ $app->get('/', function (Application $app, Request $request) {
         $octets = explode($separator = '.', $ip);
     if (count($octets) < 2)
         $octets = ['bad', 'ip'];
+    // Replace empty chunks with zeros.
     $octets = array_map(function($x) { return $x == '' ? '0' : $x; }, $octets);
     $user_ip = $octets[0] . $separator . $octets[1];
+    // Create an entity to insert into datastore.
     $key = new \Google_Service_Datastore_Key(['path' => ['kind' => 'visit']]);
-    // return date(DATE_RFC3339);
     $properties = ['user_ip' => ['stringValue' => $user_ip],
         'timestamp' => ['timestampValue' => date("Y-m-d\TH:i:s\Z")]];
     $entity = new \Google_Service_Datastore_Entity([
@@ -69,7 +70,8 @@ $app->get('/', function (Application $app, Request $request) {
             ]
         ]
     ]);
-    $datastore->projects->commit($app['google.dataset_id'], $request);
+    $dataset_id = $app['google.dataset_id'];
+    $datastore->projects->commit($dataset_id, $request);
 
     $query = new \Google_Service_Datastore_Query([
         'kind' => [
@@ -87,15 +89,15 @@ $app->get('/', function (Application $app, Request $request) {
     ]);
     $request = new \Google_Service_Datastore_RunQueryRequest();
     $request->setQuery($query);
-    $response = $datastore->projects->
-        runQuery($app['google.dataset_id'], $request);
+    $response = $datastore->projects->runQuery($dataset_id, $request);
     /** @var \Google_Service_Datastore_QueryResultBatch $batch */
     $batch = $response->getBatch();
     $visits = ["Last 10 visits:"];
     foreach ($batch->getEntityResults() as $entityResult) {
         $properties = $entityResult->getEntity()->getProperties();
-        array_push($visits, 'Time: ' . $properties['timestamp']
-            . '  Addr: ' . $properties['user_ip']);
+        array_push($visits, 'Time: '
+            . $properties['timestamp']['timestampValue']
+            . '  Addr: ' . $properties['user_ip']['stringValue']);
     }
     return new Response(implode("\n", $visits), 200,
         ['Content-Type' => 'text/plain']);
