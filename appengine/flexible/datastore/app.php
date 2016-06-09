@@ -18,8 +18,9 @@
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Google_Service_Datastore;
 
+// Use UTC time.
+date_default_timezone_set('UTC');
 
 // create the Silex application
 $app = new Application();
@@ -38,8 +39,6 @@ $app['datastore'] = function() {
 };
 
 $app->get('/', function (Application $app, Request $request) {
-    /** @var Twig_Environment $twig */
-    $twig = $app['twig'];
     /** @var \Google_Service_Datastore $datastore */
     $datastore = $app['datastore'];
     $ip = $request->GetClientIp();
@@ -49,9 +48,12 @@ $app->get('/', function (Application $app, Request $request) {
         $octets = explode($separator = '.', $ip);
     if (count($octets) < 2)
         $octets = ['bad', 'ip'];
+    $octets = array_map(function($x) { return $x == '' ? '0' : $x; }, $octets);
     $user_ip = $octets[0] . $separator . $octets[1];
     $key = new \Google_Service_Datastore_Key(['path' => ['kind' => 'visit']]);
-    $properties = ['user_ip' => $user_ip, 'timestamp' => date(DATE_ATOM)];
+    // return date(DATE_RFC3339);
+    $properties = ['user_ip' => ['stringValue' => $user_ip],
+        'timestamp' => ['timestampValue' => date("Y-m-d\TH:i:s\Z")]];
     $entity = new \Google_Service_Datastore_Entity([
         'key' => $key,
         'properties' => $properties
@@ -63,11 +65,11 @@ $app->get('/', function (Application $app, Request $request) {
         'mode' => 'NON_TRANSACTIONAL',
         'mutations' => [
             [
-                'upsert' => $entity,
+                'insert' => $entity,
             ]
         ]
     ]);
-    $datastore->projects->commit($app['google:dataset_id'], $request);
+    $datastore->projects->commit($app['google.dataset_id'], $request);
 
     $query = new \Google_Service_Datastore_Query([
         'kind' => [
@@ -86,7 +88,7 @@ $app->get('/', function (Application $app, Request $request) {
     $request = new \Google_Service_Datastore_RunQueryRequest();
     $request->setQuery($query);
     $response = $datastore->projects->
-        runQuery($app['google:dataset_id'], $request);
+        runQuery($app['google.dataset_id'], $request);
     /** @var \Google_Service_Datastore_QueryResultBatch $batch */
     $batch = $response->getBatch();
     $visits = ["Last 10 visits:"];
