@@ -29,7 +29,9 @@ class LocalTest extends WebTestCase
     public function createApplication()
     {
         $app = require __DIR__ . '/../app.php';
-        $app['google.dataset_id'] = getenv('GOOGLE_PROJECT_ID');
+        $app['mysql.dsn'] = getenv('MYSQL_DSN');
+        $app['mysql.user'] = getenv('MYSQL_USER');
+        $app['mysql.password'] = getenv('MYSQL_PASSWORD');
         return $app;
     }
 
