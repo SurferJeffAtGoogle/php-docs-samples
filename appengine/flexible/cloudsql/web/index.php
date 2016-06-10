@@ -24,5 +24,7 @@ $app = require __DIR__ . '/../app.php';
 // Run the app!
 // use "gcloud preview app deploy"
 $app['debug'] = true;
-$app['google.dataset_id'] = getenv('GCLOUD_DATASET_ID');
+$app['mysql.dsn'] = getenv('MYSQL_DSN');
+$app['mysql.user'] = getenv('MYSQL_USER');
+$app['mysql.password'] = getenv('MYSQL_PASSWORD');
 $app->run();

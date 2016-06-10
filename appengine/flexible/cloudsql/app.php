@@ -25,22 +25,16 @@ date_default_timezone_set('UTC');
 // create the Silex application
 $app = new Application();
 
-$app['datastore'] = function () {
-    // Datastore API has intermittent failures, so we set the
-    // Google Client to retry in the event of a 503 Backend Error
-    $retryConfig = ['retries' => 2 ];
-    $client = new \Google_Client(['retry' => $retryConfig ]);
-    $client->setScopes([
-        Google_Service_Datastore::CLOUD_PLATFORM,
-        Google_Service_Datastore::DATASTORE,
-    ]);
-    $client->useApplicationDefaultCredentials();
-    return new \Google_Service_Datastore($client);
+$app['pdo'] = function ($app) {
+    $pdo = new PDO($app['mysql.dsn'], $app['mysql.user'],
+        $app['mysql.password']);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo->query('CREATE TABLE IF NOT EXISTS visits ' .
+        '(time_stamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP, user_ip CHAR(64))');
+    return $pdo;
 };
 
 $app->get('/', function (Application $app, Request $request) {
-    /** @var \Google_Service_Datastore $datastore */
-    $datastore = $app['datastore'];
     $ip = $request->GetClientIp();
     // Keep only the first two octets of the IP address.
     $octets = explode($separator = ':', $ip);
@@ -53,53 +47,20 @@ $app->get('/', function (Application $app, Request $request) {
     // Replace empty chunks with zeros.
     $octets = array_map(function ($x) { return $x == '' ? '0' : $x; }, $octets);
     $user_ip = $octets[0] . $separator . $octets[1];
-    // Create an entity to insert into datastore.
-    $key = new \Google_Service_Datastore_Key(['path' => ['kind' => 'visit']]);
-    $properties = ['user_ip' => ['stringValue' => $user_ip],
-        'timestamp' => ['timestampValue' => date("Y-m-d\TH:i:s\Z")]];
-    $entity = new \Google_Service_Datastore_Entity([
-        'key' => $key,
-        'properties' => $properties
-    ]);
+    // Insert a visit into the database.
+    /** @var PDO $pdo */
+    $pdo = $app['pdo'];
+    $insert = $pdo->prepare('INSERT INTO visits (user_ip) values (:user_ip)');
+    $insert->execute(['user_ip' => $user_ip]);
 
-    // Use "NON_TRANSACTIONAL" for simplicity.  However, it means that we may
-    // not see this result in the query below.
-    $request = new \Google_Service_Datastore_CommitRequest([
-        'mode' => 'NON_TRANSACTIONAL',
-        'mutations' => [
-            [
-                'insert' => $entity,
-            ]
-        ]
-    ]);
-    $dataset_id = $app['google.dataset_id'];
-    $datastore->projects->commit($dataset_id, $request);
-
-    $query = new \Google_Service_Datastore_Query([
-        'kind' => [
-            [
-                'name' => 'visit',
-            ],
-        ],
-        'order' => [
-            'property' => [
-                'name' => 'timestamp',
-            ],
-            'direction' => 'DESCENDING',
-        ],
-        'limit' => 10,
-    ]);
-    $request = new \Google_Service_Datastore_RunQueryRequest();
-    $request->setQuery($query);
-    $response = $datastore->projects->runQuery($dataset_id, $request);
-    /** @var \Google_Service_Datastore_QueryResultBatch $batch */
-    $batch = $response->getBatch();
+    // Look up the last 10 visits
+    $select = $pdo->prepare(
+        'SELECT * FROM visits ORDER BY time_stamp DESC LIMIT 10');
+    $select->execute();
     $visits = ["Last 10 visits:"];
-    foreach ($batch->getEntityResults() as $entityResult) {
-        $properties = $entityResult->getEntity()->getProperties();
-        array_push($visits, 'Time: '
-            . $properties['timestamp']['timestampValue']
-            . '  Addr: ' . $properties['user_ip']['stringValue']);
+    while ($row = $select->fetch(PDO::FETCH_ASSOC)) {
+        array_push($visits, 'Time: ' . $row['time_stamp'] .
+            '  Addr: ' . $row['user_ip']);
     }
     return new Response(implode("\n", $visits), 200,
         ['Content-Type' => 'text/plain']);
