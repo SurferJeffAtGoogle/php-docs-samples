@@ -19,9 +19,6 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// Use UTC time.
-date_default_timezone_set('UTC');
-
 // create the Silex application
 $app = new Application();
 
@@ -47,6 +44,7 @@ $app->get('/', function (Application $app, Request $request) {
     // Replace empty chunks with zeros.
     $octets = array_map(function ($x) { return $x == '' ? '0' : $x; }, $octets);
     $user_ip = $octets[0] . $separator . $octets[1];
+
     // Insert a visit into the database.
     /** @var PDO $pdo */
     $pdo = $app['pdo'];
@@ -59,8 +57,8 @@ $app->get('/', function (Application $app, Request $request) {
     $select->execute();
     $visits = ["Last 10 visits:"];
     while ($row = $select->fetch(PDO::FETCH_ASSOC)) {
-        array_push($visits, 'Time: ' . $row['time_stamp'] .
-            '  Addr: ' . $row['user_ip']);
+        array_push($visits, sprintf('Time: %s Addr: %s', $row['time_stamp'],
+            $row['user_ip']));
     }
     return new Response(implode("\n", $visits), 200,
         ['Content-Type' => 'text/plain']);
