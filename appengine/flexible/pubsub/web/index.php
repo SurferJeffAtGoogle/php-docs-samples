@@ -24,5 +24,7 @@ $app = require __DIR__ . '/../app.php';
 // Run the app!
 // use "gcloud preview app deploy"
 $app['debug'] = true;
-$app['google.dataset_id'] = getenv('GCLOUD_DATASET_ID');
+$app['pubsub.topic_name'] = getenv('PUBSUB_TOPIC');
+$app['pubsub.subscription_name'] = getenv('PUBSUB_SUBSCRIPTION');
+$app['google.project_id'] = getenv('GCLOUD_PROJECT');
 $app->run();
