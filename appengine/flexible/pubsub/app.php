@@ -63,7 +63,6 @@ $app['pubsub'] = function ($app) {
 };
 
 $app->get('/', function (Application $app) {
-    $pubsub = $app['pubsub'];
     return $app['twig']->render('index.html.twig', [
         'messages' => $app['messages'],
         'posted' => false]);
@@ -88,7 +87,7 @@ $app->post('/pubsub/push', function (Application $app, Request $request) {
         return new Response("Invalid Request", Response::HTTP_BAD_REQUEST);
     }
     $envelope = json_decode($request->getContent());
-    $payload = base64_decode($envelope['message']['data']);
+    $payload = base64_decode($envelope->message->data);
     array_push($app['messages'], $payload);
     return 'OK';
 });

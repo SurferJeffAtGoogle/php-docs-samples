@@ -27,4 +27,5 @@ $app['debug'] = true;
 $app['pubsub.topic_name'] = getenv('PUBSUB_TOPIC');
 $app['pubsub.subscription_name'] = getenv('PUBSUB_SUBSCRIPTION');
 $app['google.project_id'] = getenv('GCLOUD_PROJECT');
+$app['pubsub.verification_token'] = getenv('PUBSUB_VERIFICATION_TOKEN');
 $app->run();
