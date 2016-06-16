@@ -18,6 +18,7 @@ namespace Google\Cloud\Samples\mailgun\test;
 
 use Google\Cloud\TestUtils\AppEngineDeploymentTrait;
 use Google\Cloud\TestUtils\FileUtil;
+use Symfony\Component\Yaml\Yaml;
 
 class DeployAppEngineFlexTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,21 +27,15 @@ class DeployAppEngineFlexTest extends \PHPUnit_Framework_TestCase
     public function beforeDeploy()
     {
         $tmpDir = FileUtil::cloneDirectoryIntoTmp(__DIR__ . '/..');
-        FileUtil::copyDir(__DIR__ . '/../../../flexible/mailgun', $tmpDir);
         self::$gcloudWrapper->setDir($tmpDir);
         chdir($tmpDir);
-        $indexPhp = file_get_contents('index.php');
-        $indexPhp = str_replace(
-            'MAILGUN_DOMAIN_NAME',
-            getenv('MAILGUN_DOMAIN_NAME'),
-            $indexPhp
-        );
-        $indexPhp = str_replace(
-            'MAILGUN_APIKEY',
-            getenv('MAILGUN_APIKEY'),
-            $indexPhp
-        );
-        file_put_contents('index.php', $indexPhp);
+
+        $appYaml = Yaml::parse(file_get_contents('app.yaml'));
+        $appYaml['env_variables']['SENDGRID_API_KEY'] =
+            getenv('SENDGRID_API_KEY');
+        $appYaml['env_variables']['SENDGRID_SENDER'] =
+            getenv('SENDER');
+        file_put_contents('app.yaml', Yaml::dump($appYaml));
     }
 
     public function testIndex()
@@ -56,7 +51,6 @@ class DeployAppEngineFlexTest extends \PHPUnit_Framework_TestCase
         $resp = $this->client->request('POST', '/', [
             'form_params' => [
                 'recipient' => 'fake@example.com',
-                'submit' => 'simple',
             ]
         ]);
 
