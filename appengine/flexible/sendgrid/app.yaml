@@ -2,7 +2,7 @@ runtime: php
 vm: true
 
 runtime_config:
-  document_root: web
+  document_root: .
 
 env_variables:
     SENDGRID_API_KEY: your-sendgrid-api-key

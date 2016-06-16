@@ -55,6 +55,6 @@ class SendgridTest extends WebTestCase
         $client->request('POST', '/', ['recipient' => 'fake@example.com']);
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals('sent', $response->getContent());
+        $this->assertEquals('Email sent.', $response->getContent());
     }
 }

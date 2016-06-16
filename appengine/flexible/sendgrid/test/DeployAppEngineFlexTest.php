@@ -34,7 +34,7 @@ class DeployAppEngineFlexTest extends \PHPUnit_Framework_TestCase
         $appYaml['env_variables']['SENDGRID_API_KEY'] =
             getenv('SENDGRID_API_KEY');
         $appYaml['env_variables']['SENDGRID_SENDER'] =
-            getenv('SENDER');
+            getenv('SENDGRID_SENDER');
         file_put_contents('app.yaml', Yaml::dump($appYaml));
     }
 
