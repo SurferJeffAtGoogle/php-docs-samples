@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Google\Cloud\Samples\mailgun\test;
+namespace Google\Cloud\Samples\twilio\test;
 
 use Google\Cloud\TestUtils\AppEngineDeploymentTrait;
 use Google\Cloud\TestUtils\FileUtil;
@@ -29,28 +29,17 @@ class DeployAppEngineFlexTest extends \PHPUnit_Framework_TestCase
         FileUtil::copyDir(__DIR__ . '/../../../flexible/mailjet', $tmpDir);
         self::$gcloudWrapper->setDir($tmpDir);
         chdir($tmpDir);
-        $indexPhp = file_get_contents('index.php');
-        $indexPhp = str_replace(
-            'MAILJET_APIKEY',
-            getenv('MAILJET_APIKEY'),
-            $indexPhp
-        );
-        $indexPhp = str_replace(
-            'MAILJET_SECRET',
-            getenv('MAILJET_SECRET'),
-            $indexPhp
-        );
-        file_put_contents('index.php', $indexPhp);
+        $appYaml = Yaml::parse(file_get_contents('app.yaml'));
+        $appYaml['env_variables']['TWILIO_ACCOUNT_SID'] =
+            getenv('TWILIO_ACCOUNT_SID');
+        $appYaml['env_variables']['TWILIO_AUTH_TOKEN'] =
+            getenv('TWILIO_AUTH_TOKEN');
+        $appYaml['env_variables']['TWILIO_NUMBER'] =
+            getenv('TWILIO_FROM_NUMBER') ?
+                getenv('TWILIO_FROM_NUMBER') : getenv('TWILIO_NUMBER');
+        file_put_contents('app.yaml', Yaml::dump($appYaml));
     }
-
-    public function testIndex()
-    {
-        // Access the modules app top page.
-        $resp = $this->client->get('/');
-        $this->assertEquals('200', $resp->getStatusCode(),
-            'top page status code');
-    }
-
+    
     public function testSendMessage()
     {
         $resp = $this->client->request('POST', '/send', [
