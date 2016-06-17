@@ -16,7 +16,7 @@
 -->
 <phpunit bootstrap="test/bootstrap.php">
     <testsuites>
-        <testsuite name="PHP mailjet test">
+        <testsuite name="PHP twilio test">
             <directory>test</directory>
         </testsuite>
     </testsuites>
