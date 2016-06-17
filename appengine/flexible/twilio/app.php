@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 $app = new Application();
 
-$app['twilio'] = function($app) {
+$app['twilio'] = function ($app) {
     return new Services_Twilio(
         $app['twilio.account_sid'],
         $app['twilio.auth_token']
@@ -31,7 +31,7 @@ $app['twilio'] = function($app) {
 /***
  * Answers a call and replies with a simple greeting.
  */
-$app->post('/call/receive', function() use ($app) {
+$app->post('/call/receive', function () use ($app) {
     $response = new Services_Twilio_Twiml();
     $response->say('Hello from Twilio!');
     return new Response(
@@ -60,7 +60,7 @@ $app->post('/sms/send', function (Request $request) use ($app) {
 /***
  * Receive an sms.
  */
-$app->post('/sms/receive', function(Request $request) use ($app) {
+$app->post('/sms/receive', function (Request $request) use ($app) {
     $sender = $request->get('From');
     $body = $request->get('Body');
     $message = "Hello, $sender, you said: $body";

@@ -26,7 +26,6 @@ class DeployAppEngineFlexTest extends \PHPUnit_Framework_TestCase
     public function beforeDeploy()
     {
         $tmpDir = FileUtil::cloneDirectoryIntoTmp(__DIR__ . '/..');
-        FileUtil::copyDir(__DIR__ . '/../../../flexible/mailjet', $tmpDir);
         self::$gcloudWrapper->setDir($tmpDir);
         chdir($tmpDir);
         $appYaml = Yaml::parse(file_get_contents('app.yaml'));
@@ -50,5 +49,41 @@ class DeployAppEngineFlexTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('200', $resp->getStatusCode(),
             'send message status code');
+    }
+
+    public function testReceiveCall()
+    {
+        $response = $this->client->request('POST', '/call/receive');
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertContains(
+            '<Say>Hello from Twilio!</Say>',
+            $response->getContent()
+        );
+    }
+
+    public function testReceiveSms()
+    {
+        $params = [
+            'From' => '16505551212',
+            'Body' => 'This is the best text message ever sent.'
+        ];
+        $response = $this->client->request('POST', '/sms/receive', [
+            'form_params' => $params,
+        ]);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertContains($params['From'], $response->getContent());
+        $this->assertContains($params['Body'], $response->getContent());
+    }
+
+    public function testSendSms()
+    {
+        $params = [
+            'to' => '16505551212',
+        ];
+        $response = $this->client->request('POST', '/sms/send', [
+            'form_params' => $params,
+        ]);
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertContains($params['to'], $response->getContent());
     }
 }
