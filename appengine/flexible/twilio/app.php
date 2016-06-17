@@ -1,12 +1,12 @@
 <?php
 /**
- * Copyright 2015 Google Inc.
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,71 +16,54 @@
  */
 
 use Silex\Application;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
-// create the Silex application
 $app = new Application();
 
-$app->get('/', function () use ($app) {
-    /** @var Mailjet\Client $mailjet */
-    $mailjet = $app['mailjet'];
-    return <<<EOF
-<!doctype html>
-<html><body>
-<form method="POST" target="/send">
-<input type="text" name="recipient" placeholder="Enter recipient email">
-<input type="submit" name="submit" value="Send email">
-</form>
-</body></html>
-EOF;
-});
-
-$app->post('/send', function () use ($app) {
-    /** @var Symfony\Component\HttpFoundation\Request $request */
-    $request = $app['request'];
-    /** @var Mailjet\Client $mailjet */
-    $mailjet = $app['mailjet'];
-    $recipient = $request->get('recipient');
-
-    # [START send_email]
-    $body = [
-        'FromEmail' => "test@example.com",
-        'FromName' => "Testing Mailjet",
-        'Subject' => "Your email flight plan!",
-        'Text-part' => "Dear passenger, welcome to Mailjet! May the delivery force be with you!",
-        'Html-part' => "<h3>Dear passenger, welcome to Mailjet!</h3><br/>May the delivery force be with you!",
-        'Recipients' => [
-            [
-                'Email' => $recipient,
-            ]
-        ]
-    ];
-
-    // trigger the API call
-    $response = $mailjet->post(Mailjet\Resources::$Email, ['body' => $body]);
-    if ($response->success()) {
-        // if the call succed, data will go here
-        return sprintf(
-            '<pre>%s</pre>',
-            json_encode($response->getData(), JSON_PRETTY_PRINT)
-        );
-    }
-
-    return 'Error: ' . print_r($response->getStatus(), true);
-    # [END send_email]
-});
-
-$app['mailjet'] = function () use ($app) {
-    if ($app['mailjet.api_key'] == 'MAILJET_APIKEY') {
-        return 'set your mailjet api key and secret in <code>index.php</code>';
-    }
-    $mailjetApiKey = $app['mailjet.api_key'];
-    $mailjetSecret = $app['mailjet.secret'];
-
-    # [START mailjet_client]
-    $mailjet = new Mailjet\Client($mailjetApiKey, $mailjetSecret);
-    # [END mailjet_client]
-
-    return $mailjet;
+$app['twilio'] = function($app) {
+    return new Services_Twilio(
+        $app['twilio.account_sid'],
+        $app['twilio.auth_token']
+    );
 };
+
+/***
+ * Answers a call and replies with a simple greeting.
+ */
+$app->post('/call/receive', function() use ($app) {
+    $response = new Services_Twilio_Twiml();
+    $response->say('Hello from Twilio!');
+    return new Response($response->asXML(), 200, ['Content-Type' => 'application/xml']);
+});
+
+
+/***
+ * Send an sms.
+ */
+$app->get('/sms/send', function (Request $request) use ($app) {
+    /** @var Services_Twilio $twilio */
+    $twilio = $app['twilio'];
+    $sms = $twilio->account->messages->sendMessage(
+        $app['twilio.number'], // From this number
+        $request->get('to'),   // Send to this number
+        'Hello from Twilio!'
+    );
+
+    return sprintf('Message ID: %s, Message Body: %s', $sms->sid, $sms->body);
+});
+
+/***
+ * Receive an sms.
+ */
+$app->get('/sms/receive', function(Request $request) use ($app) {
+    $sender = $request->get('From');
+    $body = $request->get('Body');
+    $message = "Hello, $sender, you said: $body";
+
+    $response = new Services_Twilio_Twiml();
+    $response->message($message);
+    return new Response($response->asXML(), 200, ['Content-Type' => 'application/xml']);
+});
 
 return $app;

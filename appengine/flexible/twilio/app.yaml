@@ -1,7 +1,10 @@
-runtime: php55
-threadsafe: yes
-api_version: 1
+runtime: php
+vm: true
 
-handlers:
-- url: .*
-  script: index.php
+runtime_config:
+  document_root: web
+
+env_variables:
+    TWILIO_ACCOUNT_SID: your-account-sid
+    TWILIO_AUTH_TOKEN: your-auth-token
+    TWILIO_NUMBER: your-twilio-number
