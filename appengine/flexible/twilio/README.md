@@ -1,14 +1,19 @@
-# Mailjet & Google App Engine
+# Twilio and Google App Engine Flexible Environment
 
-This sample application demonstrates how to use [Mailjet with Google App Engine](https://cloud.google.com/appengine/docs/php/mail/).
+This sample application demonstrates how to use [Twilio with Google App Engine](https://cloud.google.com/appengine/docs/flexible/php/using-sms-and-voice-services-via-twilio).
 
 ## Setup
 
 Before running this sample:
 
-1. You will need a [Mailjet account](http://www.mailjet.com).
-2. Update `MAILJET_APIKEY` and `MAILJET_SECRET` in `index.php` to match your
-   Mailjet credentials.
+1. You will need a [Twilio account](https://www.twilio.com/user/account).
+1. Update `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` in `app.yaml` to match your
+   Twilio credentials. These can be found in your [account settings]
+   (https://www.twilio.com/user/account/settings)
+1. Update `TWILIO_NUMBER` in `app.php` with a number you have authorized
+   for sending messages. Follow [Twilio's documentation]
+   (https://www.twilio.com/user/account/phone-numbers/getting-started) to set
+   this up.
 
 ## Prerequisites
 
@@ -24,7 +29,10 @@ composer install
 you can run locally using PHP's built-in web server:
 
 ```sh
-cd php-docs-samples/appengine/standard/mailjet
+export TWILIO_ACCOUNT_SID=your-account-sid
+export TWILIO_AUTH_TOKEN=your-auth-token
+export TWILIO_NUMBER=your-twilio-number
+cd php-docs-samples/appengine/flexible/twilio
 php -S localhost:8080
 ```
 
