@@ -34,14 +34,18 @@ $app['twilio'] = function($app) {
 $app->post('/call/receive', function() use ($app) {
     $response = new Services_Twilio_Twiml();
     $response->say('Hello from Twilio!');
-    return new Response($response->asXML(), 200, ['Content-Type' => 'application/xml']);
+    return new Response(
+        (string)$response,
+        200,
+        ['Content-Type' => 'application/xml']
+    );
 });
 
 
 /***
  * Send an sms.
  */
-$app->get('/sms/send', function (Request $request) use ($app) {
+$app->post('/sms/send', function (Request $request) use ($app) {
     /** @var Services_Twilio $twilio */
     $twilio = $app['twilio'];
     $sms = $twilio->account->messages->sendMessage(
@@ -56,14 +60,18 @@ $app->get('/sms/send', function (Request $request) use ($app) {
 /***
  * Receive an sms.
  */
-$app->get('/sms/receive', function(Request $request) use ($app) {
+$app->post('/sms/receive', function(Request $request) use ($app) {
     $sender = $request->get('From');
     $body = $request->get('Body');
     $message = "Hello, $sender, you said: $body";
 
     $response = new Services_Twilio_Twiml();
     $response->message($message);
-    return new Response($response->asXML(), 200, ['Content-Type' => 'application/xml']);
+    return new Response(
+        (string) $response,
+        200,
+        ['Content-Type' => 'application/xml']
+    );
 });
 
 return $app;
