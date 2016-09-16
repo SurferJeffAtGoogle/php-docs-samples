@@ -39,11 +39,9 @@ use Google\Cloud\NaturalLanguage\Annotation;
  *
  * @return Annotation
  */
-function analyze_entities($projectId, $text, $options = [])
+function analyze_entities($text, $options = [])
 {
-    $builder = new ServiceBuilder([
-        'projectId' => $projectId,
-    ]);
+    $builder = new ServiceBuilder();
     /** @var NaturalLanguageClient $language */
     $language = $builder->naturalLanguage();
     $annotation = $language->analyzeEntities($text);

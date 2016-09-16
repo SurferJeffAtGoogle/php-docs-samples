@@ -44,13 +44,6 @@ The <info>%command.name%</info> command analyzes text using the Google Cloud Nat
 
 EOF
             )
-            ->addOption(
-                'project',
-                null,
-                InputOption::VALUE_REQUIRED,
-                'The Google Cloud Platform project name to use for this invocation. ' .
-                'If omitted then the current gcloud project is assumed. '
-            )
             ->addArgument(
                 'text',
                 InputArgument::IS_ARRAY | InputArgument::REQUIRED,
@@ -62,11 +55,7 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $text = implode(" ", $input->getArgument('text'));
-        $projectId = $input->getOption('project');
-        if (!$projectId) {
-            $projectId = $this->getProjectIdFromGcloud();
-        }
-        $result = analyze_entities($projectId, $text);
-        $output->write($result);
+        $result = analyze_entities($text);
+        $output->write(json_encode($result->info(), JSON_PRETTY_PRINT));
     }
 }
