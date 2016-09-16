@@ -17,14 +17,14 @@
 
 namespace Google\Cloud\Samples\Language\Tests;
 
-use Google\Cloud\Samples\Language\AnalyzeEntitiesCommand;
+use Google\Cloud\Samples\Language\AnalyzeEverythingCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
 /**
  * Unit Tests for TablesCommand.
  */
-class TranscribeCommandTest extends \PHPUnit_Framework_TestCase
+class AnalyzeEverythingCommandTest extends \PHPUnit_Framework_TestCase
 {
     protected static $hasCredentials;
 
@@ -35,37 +35,21 @@ class TranscribeCommandTest extends \PHPUnit_Framework_TestCase
             filesize($path) > 0;
     }
 
-    /** @dataProvider provideTranscribe */
-    public function testTranscribe($audioFile, $encoding, $sampleRate)
+    public function testEverything()
     {
         if (!self::$hasCredentials) {
             $this->markTestSkipped('No application credentials were found.');
         }
-        if (!$projectId = getenv('GOOGLE_PROJECT_ID')) {
-            $this->markTestSkipped('No project ID');
-        }
 
         $application = new Application();
-        $application->add(new AnalyzeEntitiesCommand());
-        $commandTester = new CommandTester($application->get('transcribe'));
+        $application->add(new AnalyzeEverythingCommand());
+        $commandTester = new CommandTester($application->get('everything'));
         $commandTester->execute(
-            [
-                'audio-file' => $audioFile,
-                '--encoding' => $encoding,
-                '--sample-rate' => $sampleRate,
-                '--project' => $projectId
-            ],
+            ['text' =>  explode(' ', 'Do you know the way to San Jose?')],
             ['interactive' => false]
         );
-
-        $this->expectOutputRegex("/how old is the Brooklyn Bridge/");
-    }
-
-    public function provideTranscribe()
-    {
-        return [
-            [__DIR__ . '/data/audio32KHz.raw', 'LINEAR16', '32000'],
-            [__DIR__ . '/data/audio32KHz.flac', 'FLAC', '32000'],
-        ];
+        $this->expectOutputRegex(preg_quote("/[name] => San Jose/"));
+        $this->expectOutputRegex(preg_quote("/[tag] => NOUN/"));
+        $this->expectOutputRegex(preg_quote("/[documentSentiment] => Array/"));
     }
 }

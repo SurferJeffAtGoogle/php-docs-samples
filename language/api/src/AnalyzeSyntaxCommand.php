@@ -54,6 +54,6 @@ EOF
     {
         $text = implode(" ", $input->getArgument('text'));
         $result = analyze_syntax($text);
-        $output->write(json_encode($result->info(), JSON_PRETTY_PRINT));
+        print_r($result->info());
     }
 }

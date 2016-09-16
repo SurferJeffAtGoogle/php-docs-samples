@@ -16,7 +16,7 @@
 -->
 <phpunit bootstrap="test/bootstrap.php">
     <testsuites>
-        <testsuite name="PHP speech test">
+        <testsuite name="PHP natural language test">
             <directory>test</directory>
         </testsuite>
     </testsuites>
