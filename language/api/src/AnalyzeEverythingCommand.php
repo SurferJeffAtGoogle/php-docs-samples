@@ -28,14 +28,14 @@ use Symfony\Component\Console\Output\OutputInterface;
  *
  * Usage: php speech.php transcribe
  */
-class AnalyzeSyntaxCommand extends Command
+class AnalyzeEverythingCommand extends Command
 {
     use ProjectIdTrait;
 
     protected function configure()
     {
         $this
-            ->setName('syntax')
+            ->setName('everything')
             ->setDescription('Analyze some natural language text.')
             ->setHelp(<<<EOF
 The <info>%command.name%</info> command analyzes text using the Google Cloud Natural Language API.
@@ -55,7 +55,7 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $text = implode(" ", $input->getArgument('text'));
-        $result = analyze_syntax($text);
+        $result = analyze_everything($text);
         $output->write(json_encode($result->info(), JSON_PRETTY_PRINT));
     }
 }

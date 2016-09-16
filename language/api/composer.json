@@ -11,6 +11,7 @@
             "src/functions/transcribe_async.php",
             "src/functions/transcribe_sync.php",
             "src/functions/analyze_entities.php",
+            "src/functions/analyze_everything.php",
             "src/functions/analyze_sentiment.php",
             "src/functions/analyze_syntax.php"
         ]

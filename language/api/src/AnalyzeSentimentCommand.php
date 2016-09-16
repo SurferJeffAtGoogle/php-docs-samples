@@ -23,8 +23,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-$x = 3 / 0;
-
 /**
  * Command line utility to transcribe.
  *
