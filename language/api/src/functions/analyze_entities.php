@@ -1,6 +1,6 @@
 <?php
-/**
- * Copyright 2015 Google Inc. All Rights Reserved.
+/*
+ * Copyright 2016 Google Inc. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,37 +18,35 @@
 /**
  * For instructions on how to run the full sample:
  *
- * @see https://github.com/GoogleCloudPlatform/php-docs-samples/tree/master/speech/README.md
+ * @see https://github.com/GoogleCloudPlatform/php-docs-samples/tree/master/language/README.md
  */
 
 namespace Google\Cloud\Samples\Language;
 
-# [START transcribe_sync]
+# [START analyze_entities]
 use Google\Cloud\ServiceBuilder;
+use Google\Cloud\NaturalLanguage\NaturalLanguageClient;
+use Google\Cloud\NaturalLanguage\Annotation;
 
 /**
- * Transcribe an audio file using Google Cloud Speech API
- * Example:
+ * Find the entities in text.
  * ```
- * transcribe_sync($projectId, '/path/to/audiofile.wav');
+ * analyze_entities($projectId, 'Do you know the way to San Jose?');
  * ```.
  *
  * @param string $projectId The Google project ID.
- * @param string $audioFile path to an audio file.
+ * @param string $text The text to analyze.
  *
- * @return string the text transcription
+ * @return Annotation
  */
-function transcribe_sync($projectId, $audioFile, $options = [])
+function analyze_entities($projectId, $text, $options = [])
 {
     $builder = new ServiceBuilder([
         'projectId' => $projectId,
     ]);
-
-    $speech = $builder->speech();
-    $results = $speech->recognize(
-        fopen($audioFile, 'r'),
-        $options
-    );
-    print_r($results);
+    /** @var NaturalLanguageClient $language */
+    $language = $builder->naturalLanguage();
+    $annotation = $language->analyzeEntities($text);
+    return $annotation;
 }
-# [END transcribe_sync]
+# [END analyze_entities]

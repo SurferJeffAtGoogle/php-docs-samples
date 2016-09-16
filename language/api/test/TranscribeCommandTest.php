@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-namespace Google\Cloud\Samples\Speech\Tests;
+namespace Google\Cloud\Samples\Language\Tests;
 
-use Google\Cloud\Samples\Speech\TranscribeCommand;
+use Google\Cloud\Samples\Language\AnalyzeEntitiesCommand;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -46,7 +46,7 @@ class TranscribeCommandTest extends \PHPUnit_Framework_TestCase
         }
 
         $application = new Application();
-        $application->add(new TranscribeCommand());
+        $application->add(new AnalyzeEntitiesCommand());
         $commandTester = new CommandTester($application->get('transcribe'));
         $commandTester->execute(
             [

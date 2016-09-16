@@ -21,7 +21,7 @@
  * @see https://github.com/GoogleCloudPlatform/php-docs-samples/tree/master/speech/README.md
  */
 
-namespace Google\Cloud\Samples\Speech;
+namespace Google\Cloud\Samples\Language;
 
 use Exception;
 # [START transcribe_async]

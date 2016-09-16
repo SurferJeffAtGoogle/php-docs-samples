@@ -1,6 +1,6 @@
 <?php
 
-namespace Google\Cloud\Samples\Speech;
+namespace Google\Cloud\Samples\Language;
 
 /**
  * This file is to be used as an example only!

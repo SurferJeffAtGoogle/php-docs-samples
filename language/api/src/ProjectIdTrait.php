@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Google\Cloud\Samples\Speech;
+namespace Google\Cloud\Samples\Language;
 
 /**
  * Trait for determining the current project ID using "gcloud"

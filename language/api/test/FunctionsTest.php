@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-namespace Google\Cloud\Samples\Speech\Tests;
+namespace Google\Cloud\Samples\Language\Tests;
 
 /**
  * Unit Tests for misc functions.
