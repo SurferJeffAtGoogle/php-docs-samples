@@ -30,8 +30,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class AnalyzeEverythingCommand extends Command
 {
-    use ProjectIdTrait;
-
     protected function configure()
     {
         $this

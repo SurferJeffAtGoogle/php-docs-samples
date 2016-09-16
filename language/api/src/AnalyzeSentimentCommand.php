@@ -30,8 +30,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class AnalyzeSentimentCommand extends Command
 {
-    use ProjectIdTrait;
-
     protected function configure()
     {
         $this
