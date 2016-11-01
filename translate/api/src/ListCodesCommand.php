@@ -38,12 +38,12 @@ class ListCodesCommand extends Command
     {
         $this
             ->setName('list-codes')
-            ->setDescription('Detect which language text was written in using '
+            ->setDescription('List all the language codes in the '
                 + 'Google Cloud Translate API')
             ->setHelp(<<<EOF
-The <info>%command.name%</info> command transcribes audio using the Google Cloud Speech API.
+The <info>%command.name%</info> command lists all the language codes in the Google Cloud Translate API.
 
-    <info>php %command.full_name% audio_file.wav</info>
+    <info>php %command.full_name%</info>
 
 EOF
             )
@@ -52,22 +52,19 @@ EOF
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        foreach ($this->listCodes() as $code)
-        {
-            $output->writeln($code);
-        }
+        $this->listCodes($output);
     }
 
     // [START translate_list_codes]
-    /**
-     * @return mixed
-     */
-    protected function listCodes()
+    protected function listCodes(OutputInterface $output)
     {
         $translate = new TranslateClient([
             'key' => $this->apiKey
         ]);
-        return $translate->languages();
+        foreach($translate->languages() as $code)
+        {
+            $output->writeln($code);
+        }
     }
     // [END translate_list_codes]
 }

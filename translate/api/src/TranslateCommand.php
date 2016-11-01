@@ -40,9 +40,9 @@ class TranslateCommand extends Command
             ->setName('translate')
             ->setDescription('Translate text using Google Cloud Translate API')
             ->setHelp(<<<EOF
-The <info>%command.name%</info> command transcribes audio using the Google Cloud Speech API.
+The <info>%command.name%</info> command transcribes audio using the Google Cloud Translate API.
 
-    <info>php %command.full_name% audio_file.wav</info>
+    <info>php %command.full_name% -t ja "Hello World."</info>
 
 EOF
             )
@@ -63,27 +63,25 @@ EOF
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $output->writeln($this->translate(
+        $this->translate(
             $input->getArgument('text'),
-            $input->getOption('target-language')
-        ));
+            $input->getOption('target-language'),
+            $output
+        );
     }
 
 
     // [START translate_translate_text]
-    /**
-     * @param $text string The text to translate.
-     * @param $targetLanguage string The target language code.
-     * @return mixed
-     */
-    protected function translate($text, $targetLanguage)
+    protected function translate($text, $targetLanguage, OutputInterface $output)
     {
         $translate = new TranslateClient([
             'key' => $this->apiKey
         ]);
-        return $translate->translate($text, [
+        $result = $translate->translate($text, [
             'target' => $targetLanguage
         ]);
+        $output->writeln("Source language: $result[source]");
+        $output->writeln("Translation: $result[text]");
     }
     // [END translate_translate_text]
 }

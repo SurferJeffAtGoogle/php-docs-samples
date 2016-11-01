@@ -25,7 +25,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Command line utility to translate
+ * Command line utility to detect which language some text is written in.
  */
 class DetectLanguageCommand extends Command
 {
@@ -41,41 +41,34 @@ class DetectLanguageCommand extends Command
             ->setDescription('Detect which language text was written in using '
                 + 'Google Cloud Translate API')
             ->setHelp(<<<EOF
-The <info>%command.name%</info> command transcribes audio using the Google Cloud Speech API.
+The <info>%command.name%</info> command detects which language text was written in using the Google Cloud Translate API.
 
-    <info>php %command.full_name% audio_file.wav</info>
+    <info>php %command.full_name% "Your text here"</info>
 
 EOF
             )
             ->addArgument(
                 'text',
                 InputArgument::REQUIRED,
-                'The text to translate.'
+                'The text to examine.'
             )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $result = $this->detectLanguage(
-            $input->getArgument('text')
-        );
-        $output->writeln("Language code: $result[languageCode]");
-        $output->writeln("Confidence: $result[confidence]");
+        $this->detectLanguage($input->getArgument('text'), $output);
     }
 
-
     // [START translate_detect_language]
-    /**
-     * @param $text string The text to translate.
-     * @return mixed
-     */
-    protected function detectLanguage($text)
+    protected function detectLanguage($text, OutputInterface $output)
     {
         $translate = new TranslateClient([
             'key' => $this->apiKey
         ]);
-        return $translate->detectLanguage($text);
+        $result = $translate->detectLanguage($text);
+        $output->writeln("Language code: $result[languageCode]");
+        $output->writeln("Confidence: $result[confidence]");
     }
     // [END translate_detect_language]
 }

@@ -38,12 +38,12 @@ class ListLanguagesCommand extends Command
     {
         $this
             ->setName('list-langs')
-            ->setDescription('Detect which language text was written in using '
+            ->setDescription('List language codes and names in the '
                 + 'Google Cloud Translate API')
             ->setHelp(<<<EOF
-The <info>%command.name%</info> command transcribes audio using the Google Cloud Speech API.
+The <info>%command.name%</info> lists language codes and names in the Google Cloud Translate API.
 
-    <info>php %command.full_name% audio_file.wav</info>
+    <info>php %command.full_name% -t en</info>
 
 EOF
             )
@@ -51,32 +51,29 @@ EOF
                 'target-language',
                 't',
                 InputOption::VALUE_REQUIRED,
-                'The ISO 639-1 code of language to translate to, eg. \'en\'.'
+                'The ISO 639-1 code of language to use when printing names, eg. \'en\'.'
             )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        foreach ($this->listLanguage($input->getOption('target-language'))
-                 as $lang)
-        {
-            $output->writeln("$lang[code]: $lang[name]");
-        }
+        $this->listLanguage($input->getOption('target-language'), $output);
     }
 
     // [START translate_list_language_names]
-    /**
-     * @return mixed
-     */
-    protected function listLanguage($targetLanguage)
+    protected function listLanguage($targetLanguage, OutputInterface $output)
     {
         $translate = new TranslateClient([
             'key' => $this->apiKey
         ]);
-        return $translate->localizedLanguages( [
+        $result = $translate->localizedLanguages( [
             'target' => $targetLanguage
         ]);
+        foreach ($result as $lang)
+        {
+            $output->writeln("$lang[code]: $lang[name]");
+        }
     }
     // [END translate_list_language_names]
 }
