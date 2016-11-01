@@ -38,8 +38,8 @@ class ListCodesCommand extends Command
     {
         $this
             ->setName('list-codes')
-            ->setDescription('List all the language codes in the '
-                + 'Google Cloud Translate API')
+            ->setDescription('List all the language codes in the ' .
+                'Google Cloud Translate API')
             ->setHelp(<<<EOF
 The <info>%command.name%</info> command lists all the language codes in the Google Cloud Translate API.
 

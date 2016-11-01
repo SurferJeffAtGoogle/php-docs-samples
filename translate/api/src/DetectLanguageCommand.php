@@ -39,7 +39,7 @@ class DetectLanguageCommand extends Command
         $this
             ->setName('detect')
             ->setDescription('Detect which language text was written in using '
-                + 'Google Cloud Translate API')
+                . 'Google Cloud Translate API')
             ->setHelp(<<<EOF
 The <info>%command.name%</info> command detects which language text was written in using the Google Cloud Translate API.
 
