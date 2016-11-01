@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 namespace Google\Cloud\Samples\Translate;
 
 use Symfony\Component\Console\Application;
@@ -23,7 +23,7 @@ use Symfony\Component\Console\Tester\CommandTester;
 /**
  * Unit Tests for transcribe commands.
  */
-class TranscribeCommandTest extends \PHPUnit_Framework_TestCase
+class CommandTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
@@ -41,14 +41,14 @@ class TranscribeCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester->execute(
             [
                 'text' => 'Hello.',
-                '-t' => 'ja'
+                '-t' => 'ja',
             ],
             ['interactive' => false]
         );
         $this->assertEquals(0, $commandTester->getStatusCode());
         $display = $commandTester->getDisplay();
-        $this->assertContains("Source language: en", $display);
-        $this->assertContains("Translation:", $display);
+        $this->assertContains('Source language: en', $display);
+        $this->assertContains('Translation:', $display);
     }
 
     public function testTranslateBadLanguage()
@@ -60,7 +60,7 @@ class TranscribeCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester->execute(
             [
                 'text' => 'Hello.',
-                '-t' => 'jp'
+                '-t' => 'jp',
             ],
             ['interactive' => false]
         );
@@ -79,8 +79,8 @@ class TranscribeCommandTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals(0, $commandTester->getStatusCode());
         $display = $commandTester->getDisplay();
-        $this->assertContains("Language code: en", $display);
-        $this->assertContains("Confidence:", $display);
+        $this->assertContains('Language code: en', $display);
+        $this->assertContains('Confidence:', $display);
     }
 
     public function testListCodes()
@@ -103,7 +103,7 @@ class TranscribeCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester->execute(['-t' => 'en'], ['interactive' => false]);
         $this->assertEquals(0, $commandTester->getStatusCode());
         $display = $commandTester->getDisplay();
-        $this->assertContains("ja: Japanese", $display);
+        $this->assertContains('ja: Japanese', $display);
     }
 
     public function testListLanguagesInJapanese()
@@ -114,6 +114,6 @@ class TranscribeCommandTest extends \PHPUnit_Framework_TestCase
         $commandTester->execute(['-t' => 'ja'], ['interactive' => false]);
         $this->assertEquals(0, $commandTester->getStatusCode());
         $display = $commandTester->getDisplay();
-        $this->assertContains("en: 英語", $display);
+        $this->assertContains('en: 英語', $display);
     }
 }

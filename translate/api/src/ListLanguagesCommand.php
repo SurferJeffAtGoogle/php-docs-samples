@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
@@ -14,22 +15,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 namespace Google\Cloud\Samples\Translate;
 
 use Google\Cloud\Translate\TranslateClient;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Command line utility to translate
+ * Command line utility to translate.
  */
 class ListLanguagesCommand extends Command
 {
-    function __construct($apiKey)
+    public function __construct($apiKey)
     {
         parent::__construct();
         $this->apiKey = $apiKey;
@@ -39,7 +38,7 @@ class ListLanguagesCommand extends Command
         $this
             ->setName('list-langs')
             ->setDescription('List language codes and names in the '
-                . 'Google Cloud Translate API')
+                .'Google Cloud Translate API')
             ->setHelp(<<<EOF
 The <info>%command.name%</info> lists language codes and names in the Google Cloud Translate API.
 
@@ -65,13 +64,12 @@ EOF
     protected function listLanguage($targetLanguage, OutputInterface $output)
     {
         $translate = new TranslateClient([
-            'key' => $this->apiKey
+            'key' => $this->apiKey,
         ]);
-        $result = $translate->localizedLanguages( [
-            'target' => $targetLanguage
+        $result = $translate->localizedLanguages([
+            'target' => $targetLanguage,
         ]);
-        foreach ($result as $lang)
-        {
+        foreach ($result as $lang) {
             $output->writeln("$lang[code]: $lang[name]");
         }
     }

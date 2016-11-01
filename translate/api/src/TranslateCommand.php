@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
@@ -14,7 +15,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 namespace Google\Cloud\Samples\Translate;
 
 use Google\Cloud\Translate\TranslateClient;
@@ -25,11 +25,11 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Command line utility to translate
+ * Command line utility to translate.
  */
 class TranslateCommand extends Command
 {
-    function __construct($apiKey)
+    public function __construct($apiKey)
     {
         parent::__construct();
         $this->apiKey = $apiKey;
@@ -62,7 +62,6 @@ EOF
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         $this->translate(
             $input->getArgument('text'),
             $input->getOption('target-language'),
@@ -70,15 +69,14 @@ EOF
         );
     }
 
-
     // [START translate_translate_text]
     protected function translate($text, $targetLanguage, OutputInterface $output)
     {
         $translate = new TranslateClient([
-            'key' => $this->apiKey
+            'key' => $this->apiKey,
         ]);
         $result = $translate->translate($text, [
-            'target' => $targetLanguage
+            'target' => $targetLanguage,
         ]);
         $output->writeln("Source language: $result[source]");
         $output->writeln("Translation: $result[text]");

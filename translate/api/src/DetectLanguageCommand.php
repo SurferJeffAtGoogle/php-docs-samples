@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright 2016 Google Inc. All Rights Reserved.
  *
@@ -14,14 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 namespace Google\Cloud\Samples\Translate;
 
 use Google\Cloud\Translate\TranslateClient;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
@@ -29,7 +28,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DetectLanguageCommand extends Command
 {
-    function __construct($apiKey)
+    public function __construct($apiKey)
     {
         parent::__construct();
         $this->apiKey = $apiKey;
@@ -39,7 +38,7 @@ class DetectLanguageCommand extends Command
         $this
             ->setName('detect')
             ->setDescription('Detect which language text was written in using '
-                . 'Google Cloud Translate API')
+                .'Google Cloud Translate API')
             ->setHelp(<<<EOF
 The <info>%command.name%</info> command detects which language text was written in using the Google Cloud Translate API.
 
@@ -64,7 +63,7 @@ EOF
     protected function detectLanguage($text, OutputInterface $output)
     {
         $translate = new TranslateClient([
-            'key' => $this->apiKey
+            'key' => $this->apiKey,
         ]);
         $result = $translate->detectLanguage($text);
         $output->writeln("Language code: $result[languageCode]");
