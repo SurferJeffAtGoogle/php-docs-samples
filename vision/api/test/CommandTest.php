@@ -83,4 +83,20 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('NOSE_TIP', $display);
         $this->assertContains('angerLikelihood:', $display);
     }
+
+    public function testLandmarkCommand()
+    {
+        $application = new Application();
+        $application->add(new DetectLandmarkCommand());
+        $commandTester = new CommandTester($application->get('landmark'));
+        $commandTester->execute(
+            [
+                'path' => __DIR__ . '/data/tower.jpg',
+            ],
+            ['interactive' => false]
+        );
+        $this->assertEquals(0, $commandTester->getStatusCode());
+        $display = $this->getActualOutput();
+        $this->assertContains('Eiffel', $display);
+    }
 }
