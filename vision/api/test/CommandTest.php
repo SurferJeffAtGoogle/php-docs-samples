@@ -67,4 +67,20 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $this->assertContains('extinct', $display);
     }
 
+    public function testFaceCommand()
+    {
+        $application = new Application();
+        $application->add(new DetectFaceCommand());
+        $commandTester = new CommandTester($application->get('face'));
+        $commandTester->execute(
+            [
+                'path' => __DIR__ . '/data/face.png',
+            ],
+            ['interactive' => false]
+        );
+        $this->assertEquals(0, $commandTester->getStatusCode());
+        $display = $this->getActualOutput();
+        $this->assertContains('NOSE_TIP', $display);
+        $this->assertContains('angerLikelihood:', $display);
+    }
 }

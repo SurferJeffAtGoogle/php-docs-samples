@@ -21,4 +21,6 @@ use Symfony\Component\Console\Application;
 
 $application = new Application();
 $application->add(new Google\Cloud\Samples\Vision\DetectLabelCommand());
+$application->add(new Google\Cloud\Samples\Vision\DetectTextCommand());
+$application->add(new Google\Cloud\Samples\Vision\DetectFaceCommand());
 $application->run();
