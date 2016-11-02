@@ -18,9 +18,9 @@
 
 namespace Google\Cloud\Samples\Vision;
 
-// [START translate_detect_language]
+// [START text_detection]
 use Google\Cloud\Vision\VisionClient;
-// [END translate_detect_language]
+// [END text_detection]
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -68,7 +68,7 @@ EOF
         );
     }
 
-    // [START translate_detect_language]
+    // [START text_detection]
     /***
      * @param $apiKey string Your API key.
      * @param $path string The path to the image file.
@@ -80,7 +80,6 @@ EOF
         ]);
         $image = $vision->image(file_get_contents($path), ['TEXT_DETECTION']);
         $result = $vision->annotate($image);
-        // var_dump($result->info()['textAnnotations']);
         foreach($result->info()['textAnnotations'] as $annotation) {
             print("TEXT\n");
             if (isset($annotation['locale'])) {
@@ -95,5 +94,5 @@ EOF
             }
         }
     }
-    // [END translate_detect_language]
+    // [END text_detection]
 }

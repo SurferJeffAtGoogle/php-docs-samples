@@ -18,9 +18,9 @@
 
 namespace Google\Cloud\Samples\Vision;
 
-// [START translate_detect_language]
+// [START face_detection]
 use Google\Cloud\Vision\VisionClient;
-// [END translate_detect_language]
+// [END face_detection]
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -68,7 +68,7 @@ EOF
         );
     }
 
-    // [START translate_detect_language]
+    // [START face_detection]
     /***
      * @param $apiKey string Your API key.
      * @param $path string The path to the image file.
@@ -116,5 +116,5 @@ EOF
             }
         }
     }
-    // [END translate_detect_language]
+    // [END face_detection]
 }
