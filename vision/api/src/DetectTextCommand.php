@@ -30,16 +30,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * Command line utility to detect which language some text is written in.
  */
-class DetectLabelCommand extends Command
+class DetectTextCommand extends Command
 {
     protected function configure()
     {
         $this
-            ->setName('label')
-            ->setDescription('Detect labels in an image using '
+            ->setName('text')
+            ->setDescription('Detect text in an image using '
                 . 'Google Cloud Vision API')
             ->setHelp(<<<EOF
-The <info>%command.name%</info> command labels objects seen in an image using
+The <info>%command.name%</info> command prints text seen in an image using
 the Google Cloud Vision API.
 
     <info>php %command.full_name% -k YOUR-API-KEY path/to/image.png</info>
@@ -62,7 +62,7 @@ EOF
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->detectLabel(
+        $this->detectText(
             $input->getOption('api-key'),
             $input->getArgument('path')
         );
@@ -73,18 +73,26 @@ EOF
      * @param $apiKey string Your API key.
      * @param $path string The path to the image file.
      */
-    protected function detectLabel($apiKey, $path)
+    protected function detectText($apiKey, $path)
     {
         $vision = new VisionClient([
             'key' => $apiKey,
         ]);
-        $image = $vision->image(file_get_contents($path), ['LABEL_DETECTION']);
+        $image = $vision->image(file_get_contents($path), ['TEXT_DETECTION']);
         $result = $vision->annotate($image);
-        foreach($result->info()['labelAnnotations'] as $annotation) {
-            print("LABEL\n");
-            print("  mid: $annotation[mid]\n");
+        // var_dump($result->info()['textAnnotations']);
+        foreach($result->info()['textAnnotations'] as $annotation) {
+            print("TEXT\n");
+            if (isset($annotation['locale'])) {
+                print("  locale: $annotation[locale]\n");
+            }
             print("  description: $annotation[description]\n");
-            print("  score: $annotation[score]\n");
+            if (isset($annotation['boundingPoly'])) {
+                print("  BOUNDING POLY\n");
+                foreach($annotation['boundingPoly']['vertices'] as $vertex) {
+                    print("    x:$vertex[x]\ty:$vertex[y]\n");
+                }
+            }
         }
     }
     // [END translate_detect_language]

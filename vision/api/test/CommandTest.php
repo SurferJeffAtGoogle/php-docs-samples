@@ -16,7 +16,7 @@
  * limitations under the License.
  */
 
-namespace Google\Cloud\Samples\Translate;
+namespace Google\Cloud\Samples\Vision;
 
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -28,102 +28,43 @@ class CommandTest extends \PHPUnit_Framework_TestCase
 {
     public function setUp()
     {
-        $this->apiKey = getenv('GOOGLE_API_KEY');
-        if (!$this->apiKey) {
-            $this->markTestSkipped('No api key was found.');
+        if (!$creds = getenv('GOOGLE_APPLICATION_CREDENTIALS')) {
+            $this->markTestSkipped('Set the GOOGLE_APPLICATION_CREDENTIALS ' .
+                'environment variable');
         }
     }
 
-    public function testTranslate()
+    public function testLabelCommand()
     {
         $application = new Application();
-        $application->add(new TranslateCommand());
-        $commandTester = new CommandTester($application->get('translate'));
+        $application->add(new DetectLabelCommand());
+        $commandTester = new CommandTester($application->get('label'));
         $commandTester->execute(
             [
-                '-k' => $this->apiKey,
-                'text' => 'Hello.',
-                '-t' => 'ja',
+                'path' => __DIR__ . '/data/cat.jpg',
             ],
             ['interactive' => false]
         );
         $this->assertEquals(0, $commandTester->getStatusCode());
         $display = $this->getActualOutput();
-        $this->assertContains('Source language: en', $display);
-        $this->assertContains('Translation:', $display);
+        $this->assertContains('description: cat', $display);
+        $this->assertContains('description: mammal', $display);
     }
 
-    public function testTranslateBadLanguage()
+    public function testTextCommand()
     {
         $application = new Application();
-        $application->add(new TranslateCommand());
-        $commandTester = new CommandTester($application->get('translate'));
-        $this->setExpectedException('Google\Cloud\Exception\BadRequestException');
+        $application->add(new DetectTextCommand());
+        $commandTester = new CommandTester($application->get('text'));
         $commandTester->execute(
             [
-                '-k' => $this->apiKey,
-                'text' => 'Hello.',
-                '-t' => 'jp',
-            ],
-            ['interactive' => false]
-        );
-    }
-
-    public function testDetectLanguage()
-    {
-        $application = new Application();
-        $application->add(new DetectLanguageCommand());
-        $commandTester = new CommandTester($application->get('detect'));
-        $commandTester->execute(
-            [
-                '-k' => $this->apiKey,
-                'text' => 'Hello.',
+                'path' => __DIR__ . '/data/sabertooth.gif',
             ],
             ['interactive' => false]
         );
         $this->assertEquals(0, $commandTester->getStatusCode());
         $display = $this->getActualOutput();
-        $this->assertContains('Language code: en', $display);
-        $this->assertContains('Confidence:', $display);
+        $this->assertContains('extinct', $display);
     }
 
-    public function testListCodes()
-    {
-        $application = new Application();
-        $application->add(new ListCodesCommand());
-        $commandTester = new CommandTester($application->get('list-codes'));
-        $commandTester->execute(['-k' => $this->apiKey], ['interactive' => false]);
-        $this->assertEquals(0, $commandTester->getStatusCode());
-        $display = $this->getActualOutput();
-        $this->assertContains("\nen\n", $display);
-        $this->assertContains("\nja\n", $display);
-    }
-
-    public function testListLanguagesInEnglish()
-    {
-        $application = new Application();
-        $application->add(new ListLanguagesCommand());
-        $commandTester = new CommandTester($application->get('list-langs'));
-        $commandTester->execute(
-            ['-k' => $this->apiKey, '-t' => 'en'],
-            ['interactive' => false]
-        );
-        $this->assertEquals(0, $commandTester->getStatusCode());
-        $display = $this->getActualOutput();
-        $this->assertContains('ja: Japanese', $display);
-    }
-
-    public function testListLanguagesInJapanese()
-    {
-        $application = new Application();
-        $application->add(new ListLanguagesCommand());
-        $commandTester = new CommandTester($application->get('list-langs'));
-        $commandTester->execute(
-            ['-k' => $this->apiKey, '-t' => 'ja'],
-            ['interactive' => false]
-        );
-        $this->assertEquals(0, $commandTester->getStatusCode());
-        $display = $this->getActualOutput();
-        $this->assertContains('en: 英語', $display);
-    }
 }
