@@ -115,4 +115,20 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $display = $this->getActualOutput();
         $this->assertContains('Google', $display);
     }
+
+    public function testSafeSearchCommand()
+    {
+        $application = new Application();
+        $application->add(new DetectSafeSearchCommand());
+        $commandTester = new CommandTester($application->get('safe-search'));
+        $commandTester->execute(
+            [
+                'path' => __DIR__ . '/data/logo.jpg',
+            ],
+            ['interactive' => false]
+        );
+        $this->assertEquals(0, $commandTester->getStatusCode());
+        $display = $this->getActualOutput();
+        $this->assertContains('adult:', $display);
+    }
 }
