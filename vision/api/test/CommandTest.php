@@ -99,4 +99,20 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $display = $this->getActualOutput();
         $this->assertContains('Eiffel', $display);
     }
+
+    public function testLogoCommand()
+    {
+        $application = new Application();
+        $application->add(new DetectLogoCommand());
+        $commandTester = new CommandTester($application->get('logo'));
+        $commandTester->execute(
+            [
+                'path' => __DIR__ . '/data/logo.jpg',
+            ],
+            ['interactive' => false]
+        );
+        $this->assertEquals(0, $commandTester->getStatusCode());
+        $display = $this->getActualOutput();
+        $this->assertContains('Google', $display);
+    }
 }

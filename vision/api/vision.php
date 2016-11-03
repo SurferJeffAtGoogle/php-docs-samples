@@ -24,4 +24,5 @@ $application->add(new Google\Cloud\Samples\Vision\DetectLabelCommand());
 $application->add(new Google\Cloud\Samples\Vision\DetectTextCommand());
 $application->add(new Google\Cloud\Samples\Vision\DetectFaceCommand());
 $application->add(new Google\Cloud\Samples\Vision\DetectLandmarkCommand());
+$application->add(new Google\Cloud\Samples\Vision\DetectLogoCommand());
 $application->run();
