@@ -80,7 +80,7 @@ EOF
         ]);
         $image = $vision->image(file_get_contents($path), ['TEXT_DETECTION']);
         $result = $vision->annotate($image);
-        foreach($result->info()['textAnnotations'] as $annotation) {
+        foreach ($result->info()['textAnnotations'] as $annotation) {
             print("TEXT\n");
             if (isset($annotation['locale'])) {
                 print("  locale: $annotation[locale]\n");
@@ -88,7 +88,7 @@ EOF
             print("  description: $annotation[description]\n");
             if (isset($annotation['boundingPoly'])) {
                 print("  BOUNDING POLY\n");
-                foreach($annotation['boundingPoly']['vertices'] as $vertex) {
+                foreach ($annotation['boundingPoly']['vertices'] as $vertex) {
                     print("    x:$vertex[x]\ty:$vertex[y]\n");
                 }
             }

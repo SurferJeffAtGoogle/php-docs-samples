@@ -80,7 +80,7 @@ EOF
         ]);
         $image = $vision->image(file_get_contents($path), ['LOGO_DETECTION']);
         $result = $vision->annotate($image);
-        foreach($result->info()['logoAnnotations'] as $annotation) {
+        foreach ($result->info()['logoAnnotations'] as $annotation) {
             var_dump($annotation);
             print("LOGO\n");
             print("  mid: $annotation[mid]\n");
@@ -88,7 +88,7 @@ EOF
             print("  score: $annotation[score]\n");
             if (isset($annotation['boundingPoly'])) {
                 print("  BOUNDING POLY\n");
-                foreach($annotation['boundingPoly']['vertices'] as $vertex) {
+                foreach ($annotation['boundingPoly']['vertices'] as $vertex) {
                     print("    x:$vertex[x]\ty:$vertex[y]\n");
                 }
             }

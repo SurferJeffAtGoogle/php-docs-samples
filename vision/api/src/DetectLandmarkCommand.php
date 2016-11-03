@@ -80,18 +80,18 @@ EOF
         ]);
         $image = $vision->image(file_get_contents($path), ['LANDMARK_DETECTION']);
         $result = $vision->annotate($image);
-        foreach($result->info()['landmarkAnnotations'] as $annotation) {
+        foreach ($result->info()['landmarkAnnotations'] as $annotation) {
             print("LANDMARK\n");
             print("  mid: $annotation[mid]\n");
             print("  description: $annotation[description]\n");
             print("  score: $annotation[score]\n");
             if (isset($annotation['boundingPoly'])) {
                 print("  BOUNDING POLY\n");
-                foreach($annotation['boundingPoly']['vertices'] as $vertex) {
+                foreach ($annotation['boundingPoly']['vertices'] as $vertex) {
                     print("    x:$vertex[x]\ty:$vertex[y]\n");
                 }
             }
-            foreach($annotation['locations'] as $location) {
+            foreach ($annotation['locations'] as $location) {
                 if (isset($location['latLng'])) {
                     $ll = $location['latLng'];
                     print("  LOCATION:\tlatitude:$ll[latitude]\t" .

@@ -80,18 +80,18 @@ EOF
         ]);
         $image = $vision->image(file_get_contents($path), ['FACE_DETECTION']);
         $result = $vision->annotate($image);
-        foreach($result->info()['faceAnnotations'] as $annotation) {
+        foreach ($result->info()['faceAnnotations'] as $annotation) {
             print("FACE\n");
             if (isset($annotation['boundingPoly'])) {
                 print("  BOUNDING POLY\n");
-                foreach($annotation['boundingPoly']['vertices'] as $vertex) {
+                foreach ($annotation['boundingPoly']['vertices'] as $vertex) {
                     $x = isset($vertex['x']) ? $vertex['x'] : '';
                     $y = isset($vertex['y']) ? $vertex['y'] : '';
                     print("    x:$x\ty:$y\n");
                 }
             }
-            print ("  LANDMARKS\n");
-            foreach($annotation['landmarks'] as $landmark) {
+            print("  LANDMARKS\n");
+            foreach ($annotation['landmarks'] as $landmark) {
                 $pos = $landmark['position'];
                 print("    $landmark[type]:\tx:$pos[x]\ty:$pos[y]\tz:$pos[z]\n");
             }

@@ -80,7 +80,7 @@ EOF
         ]);
         $image = $vision->image(file_get_contents($path), ['LABEL_DETECTION']);
         $result = $vision->annotate($image);
-        foreach($result->info()['labelAnnotations'] as $annotation) {
+        foreach ($result->info()['labelAnnotations'] as $annotation) {
             print("LABEL\n");
             print("  mid: $annotation[mid]\n");
             print("  description: $annotation[description]\n");
