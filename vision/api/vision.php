@@ -26,4 +26,5 @@ $application->add(new Google\Cloud\Samples\Vision\DetectFaceCommand());
 $application->add(new Google\Cloud\Samples\Vision\DetectLandmarkCommand());
 $application->add(new Google\Cloud\Samples\Vision\DetectLogoCommand());
 $application->add(new Google\Cloud\Samples\Vision\DetectSafeSearchCommand());
+$application->add(new Google\Cloud\Samples\Vision\DetectImagePropertyCommand());
 $application->run();

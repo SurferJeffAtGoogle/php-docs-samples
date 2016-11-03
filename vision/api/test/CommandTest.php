@@ -131,4 +131,22 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $display = $this->getActualOutput();
         $this->assertContains('adult:', $display);
     }
+
+    public function testImagePropertyCommand()
+    {
+        $application = new Application();
+        $application->add(new DetectImagePropertyCommand());
+        $commandTester = new CommandTester($application->get('property'));
+        $commandTester->execute(
+            [
+                'path' => __DIR__ . '/data/logo.jpg',
+            ],
+            ['interactive' => false]
+        );
+        $this->assertEquals(0, $commandTester->getStatusCode());
+        $display = $this->getActualOutput();
+        $this->assertContains('red:', $display);
+        $this->assertContains('green:', $display);
+        $this->assertContains('blue:', $display);
+    }
 }
