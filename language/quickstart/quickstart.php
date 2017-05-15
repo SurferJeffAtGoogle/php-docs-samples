@@ -23,7 +23,7 @@ require __DIR__ . '/vendor/autoload.php';
 use Google\Cloud\NaturalLanguage\NaturalLanguageClient;
 
 # Your Google Cloud Platform project ID
-$projectId = 'YOUR_PROJECT_ID';
+$projectId = 'bookshelf-dotnet';
 
 # Instantiates a client
 $language = new NaturalLanguageClient([

@@ -19,6 +19,67 @@ namespace Google\Cloud\Samples\Language;
 
 use Google\Cloud\NaturalLanguage\Annotation;
 
+function generate_annotation_printer($annotation) {
+    $ret = <<<EOS
+function annotation_to_string(Annotation \$annotation)
+{
+    \$ret = '';
+    \$info = \$annotation->info();
+EOS;
+    $ret .= generate_array_dump('    ', 'info', $annotation->info());
+    $ret .= '}';
+    return $ret;
+}
+
+function collect_key_paths_recursively(array $array, array $ancestorKeyPath, array &$keyPaths) {
+    foreach ($array as $key => $value) {
+        if ($key === 0) {
+            $key = '#';
+        }
+        $path = $ancestorKeyPath;
+        array_push($path, $key);
+        $keyPaths[implode('-',$path)] = true;
+        if (is_array($value)) {
+            collect_key_paths_recursively($value, $path, $keyPaths);
+        }
+        if ($key === '#') {
+            break;
+        }
+    }
+}
+
+function collect_key_paths(array $array)
+{
+    $keyPaths = [];
+    collect_key_paths_recursively($array, [], $keyPaths);
+    return $keyPaths;
+}
+
+function generate_dump($indent, $arrayName, $key, $value) {
+    $keyLiteral = var_export($key, true);
+    $text = $indent . sprintf('if (isset($%s[%s])) {', $arrayName, $keyLiteral)
+        . PHP_EOL;
+    $innerIndent = $indent . '    ';
+    if (is_array($value)) {
+        $text .= $innerIndent . sprintf('$%s = %s[%s]',$key, $arrayName, $keyLiteral)
+            . PHP_EOL;
+        $text .= generate_array_dump($innerIndent, $key, $value);
+    } else {
+        $text .= $innerIndent . '$ret .= sprintf("%s: %s",' . PHP_EOL;
+        $text .= $innerIndent . "  $keyLiteral, $arrayName[$keyLiteral]);" . PHP_EOL;
+    }
+    $text .= $indent . '}' . PHP_EOL;
+    return $text;
+}
+
+function generate_array_dump($indent, $arrayName, $array) {
+    $text = '';
+    foreach ($array as $innerKey => $innerValue) {
+        $text .= generate_dump($indent, $arrayName, $innerKey, $innerValue);
+    }
+    return $text;
+}
+
 /**
  * Convert an Annotation to a string.
  *
@@ -27,6 +88,7 @@ use Google\Cloud\NaturalLanguage\Annotation;
  */
 function annotation_to_string(Annotation $annotation)
 {
+    return var_dump(collect_key_paths($annotation->info()));
     $ret = '';
     $info = $annotation->info();
     if (isset($info['language'])) {
