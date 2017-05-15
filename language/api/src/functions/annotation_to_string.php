@@ -37,6 +37,9 @@ function collect_key_paths_recursively(array $array, array $ancestorKeyPath, arr
             $key = '#';
         }
         $path = $ancestorKeyPath;
+        if (!is_array($value)) {
+            $key .= '$';
+        }
         array_push($path, $key);
         $keyPaths[implode('-',$path)] = true;
         if (is_array($value)) {
@@ -48,10 +51,56 @@ function collect_key_paths_recursively(array $array, array $ancestorKeyPath, arr
     }
 }
 
+function count_array_matches(array $a, array $b) {
+    $max = min(count($a), count($b));
+    for ($i = 0; $i < $max; ++$i) {
+        if ($a[$i] != $b[$i]) {
+            break;
+        }
+    }
+    return $i;
+}
+
+function generate_annotation_to_string(Annotation $annotation) {
+    $text = '';
+    $indent = '    ';
+    $keyPaths = collect_key_paths($annotation->info());
+    /** @var string $path */
+    $prevSteps = [];
+    foreach($keyPaths as $path) {
+        $steps = explode('-', $path);
+        $n = count_array_matches($prevSteps, $steps);
+        while ($n < count($prevSteps)) {
+            $indent = substr($indent, 0, count($indent) - 4);
+            $text .= $indent . '}' . PHP_EOL;
+            array_pop($prevSteps);
+        }
+        while ($n < count($steps)) {
+            array_push($prevSteps, $steps[$n]);
+            $keyLiterals = [];
+            foreach ($prevSteps as $step) {
+                array_push($keyLiterals, var_export($step, true));
+            }
+            $text .= $indent . sprintf('if (isset($info[%s]) {',
+                implode('][', $keyLiterals)) . PHP_EOL;
+            $indent .= '   ';
+            $n += 1;
+        }
+    }
+    while (0 < count($prevSteps)) {
+        $indent = substr($indent, 0, count($indent) - 4);
+        $text .= $indent . '}' . PHP_EOL;
+        array_pop($prevSteps);
+    }
+    return $text;
+}
+
 function collect_key_paths(array $array)
 {
     $keyPaths = [];
     collect_key_paths_recursively($array, [], $keyPaths);
+    $keyPaths = array_keys($keyPaths);
+    sort($keyPaths);
     return $keyPaths;
 }
 
@@ -88,7 +137,8 @@ function generate_array_dump($indent, $arrayName, $array) {
  */
 function annotation_to_string(Annotation $annotation)
 {
-    return var_dump(collect_key_paths($annotation->info()));
+    echo generate_annotation_to_string($annotation);
+    return;
     $ret = '';
     $info = $annotation->info();
     if (isset($info['language'])) {
