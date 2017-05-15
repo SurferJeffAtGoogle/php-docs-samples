@@ -18,6 +18,7 @@
 namespace Google\Cloud\Samples\Language;
 
 use Google\Cloud\NaturalLanguage\Annotation;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Convert an Annotation to a string.
@@ -27,5 +28,5 @@ use Google\Cloud\NaturalLanguage\Annotation;
  */
 function annotation_to_string(Annotation $annotation)
 {
-    return var_export($annotation->info(), true);
+    return Yaml::dump($annotation->info(), 20, 2);
 }

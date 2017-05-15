@@ -43,172 +43,119 @@ The <info>%command.name%</info> command analyzes text using the Google Cloud Nat
     
 Example:
     <info>php %command.full_name% "John took a walk."</info>
-    
-array (
-  'sentences' => 
-  array (
-    0 => 
-    array (
-      'text' => 
-      array (
-        'content' => 'John took a walk.',
-        'beginOffset' => 0,
-      ),
-    ),
-  ),
-  'tokens' => 
-  array (
-    0 => 
-    array (
-      'text' => 
-      array (
-        'content' => 'John',
-        'beginOffset' => 0,
-      ),
-      'partOfSpeech' => 
-      array (
-        'tag' => 'NOUN',
-        'aspect' => 'ASPECT_UNKNOWN',
-        'case' => 'CASE_UNKNOWN',
-        'form' => 'FORM_UNKNOWN',
-        'gender' => 'GENDER_UNKNOWN',
-        'mood' => 'MOOD_UNKNOWN',
-        'number' => 'SINGULAR',
-        'person' => 'PERSON_UNKNOWN',
-        'proper' => 'PROPER',
-        'reciprocity' => 'RECIPROCITY_UNKNOWN',
-        'tense' => 'TENSE_UNKNOWN',
-        'voice' => 'VOICE_UNKNOWN',
-      ),
-      'dependencyEdge' => 
-      array (
-        'headTokenIndex' => 1,
-        'label' => 'NSUBJ',
-      ),
-      'lemma' => 'John',
-    ),
-    1 => 
-    array (
-      'text' => 
-      array (
-        'content' => 'took',
-        'beginOffset' => 5,
-      ),
-      'partOfSpeech' => 
-      array (
-        'tag' => 'VERB',
-        'aspect' => 'ASPECT_UNKNOWN',
-        'case' => 'CASE_UNKNOWN',
-        'form' => 'FORM_UNKNOWN',
-        'gender' => 'GENDER_UNKNOWN',
-        'mood' => 'INDICATIVE',
-        'number' => 'NUMBER_UNKNOWN',
-        'person' => 'PERSON_UNKNOWN',
-        'proper' => 'PROPER_UNKNOWN',
-        'reciprocity' => 'RECIPROCITY_UNKNOWN',
-        'tense' => 'PAST',
-        'voice' => 'VOICE_UNKNOWN',
-      ),
-      'dependencyEdge' => 
-      array (
-        'headTokenIndex' => 1,
-        'label' => 'ROOT',
-      ),
-      'lemma' => 'take',
-    ),
-    2 => 
-    array (
-      'text' => 
-      array (
-        'content' => 'a',
-        'beginOffset' => 10,
-      ),
-      'partOfSpeech' => 
-      array (
-        'tag' => 'DET',
-        'aspect' => 'ASPECT_UNKNOWN',
-        'case' => 'CASE_UNKNOWN',
-        'form' => 'FORM_UNKNOWN',
-        'gender' => 'GENDER_UNKNOWN',
-        'mood' => 'MOOD_UNKNOWN',
-        'number' => 'NUMBER_UNKNOWN',
-        'person' => 'PERSON_UNKNOWN',
-        'proper' => 'PROPER_UNKNOWN',
-        'reciprocity' => 'RECIPROCITY_UNKNOWN',
-        'tense' => 'TENSE_UNKNOWN',
-        'voice' => 'VOICE_UNKNOWN',
-      ),
-      'dependencyEdge' => 
-      array (
-        'headTokenIndex' => 3,
-        'label' => 'DET',
-      ),
-      'lemma' => 'a',
-    ),
-    3 => 
-    array (
-      'text' => 
-      array (
-        'content' => 'walk',
-        'beginOffset' => 12,
-      ),
-      'partOfSpeech' => 
-      array (
-        'tag' => 'NOUN',
-        'aspect' => 'ASPECT_UNKNOWN',
-        'case' => 'CASE_UNKNOWN',
-        'form' => 'FORM_UNKNOWN',
-        'gender' => 'GENDER_UNKNOWN',
-        'mood' => 'MOOD_UNKNOWN',
-        'number' => 'SINGULAR',
-        'person' => 'PERSON_UNKNOWN',
-        'proper' => 'PROPER_UNKNOWN',
-        'reciprocity' => 'RECIPROCITY_UNKNOWN',
-        'tense' => 'TENSE_UNKNOWN',
-        'voice' => 'VOICE_UNKNOWN',
-      ),
-      'dependencyEdge' => 
-      array (
-        'headTokenIndex' => 1,
-        'label' => 'DOBJ',
-      ),
-      'lemma' => 'walk',
-    ),
-    4 => 
-    array (
-      'text' => 
-      array (
-        'content' => '.',
-        'beginOffset' => 16,
-      ),
-      'partOfSpeech' => 
-      array (
-        'tag' => 'PUNCT',
-        'aspect' => 'ASPECT_UNKNOWN',
-        'case' => 'CASE_UNKNOWN',
-        'form' => 'FORM_UNKNOWN',
-        'gender' => 'GENDER_UNKNOWN',
-        'mood' => 'MOOD_UNKNOWN',
-        'number' => 'NUMBER_UNKNOWN',
-        'person' => 'PERSON_UNKNOWN',
-        'proper' => 'PROPER_UNKNOWN',
-        'reciprocity' => 'RECIPROCITY_UNKNOWN',
-        'tense' => 'TENSE_UNKNOWN',
-        'voice' => 'VOICE_UNKNOWN',
-      ),
-      'dependencyEdge' => 
-      array (
-        'headTokenIndex' => 1,
-        'label' => 'P',
-      ),
-      'lemma' => '.',
-    ),
-  ),
-  'language' => 'en',
-  'entities' => 
-  array (
-  ),
-)
+sentences:
+  -
+    text:
+      content: 'John took a walk.'
+      beginOffset: 0
+tokens:
+  -
+    text:
+      content: John
+      beginOffset: 0
+    partOfSpeech:
+      tag: NOUN
+      aspect: ASPECT_UNKNOWN
+      case: CASE_UNKNOWN
+      form: FORM_UNKNOWN
+      gender: GENDER_UNKNOWN
+      mood: MOOD_UNKNOWN
+      number: SINGULAR
+      person: PERSON_UNKNOWN
+      proper: PROPER
+      reciprocity: RECIPROCITY_UNKNOWN
+      tense: TENSE_UNKNOWN
+      voice: VOICE_UNKNOWN
+    dependencyEdge:
+      headTokenIndex: 1
+      label: NSUBJ
+    lemma: John
+  -
+    text:
+      content: took
+      beginOffset: 5
+    partOfSpeech:
+      tag: VERB
+      aspect: ASPECT_UNKNOWN
+      case: CASE_UNKNOWN
+      form: FORM_UNKNOWN
+      gender: GENDER_UNKNOWN
+      mood: INDICATIVE
+      number: NUMBER_UNKNOWN
+      person: PERSON_UNKNOWN
+      proper: PROPER_UNKNOWN
+      reciprocity: RECIPROCITY_UNKNOWN
+      tense: PAST
+      voice: VOICE_UNKNOWN
+    dependencyEdge:
+      headTokenIndex: 1
+      label: ROOT
+    lemma: take
+  -
+    text:
+      content: a
+      beginOffset: 10
+    partOfSpeech:
+      tag: DET
+      aspect: ASPECT_UNKNOWN
+      case: CASE_UNKNOWN
+      form: FORM_UNKNOWN
+      gender: GENDER_UNKNOWN
+      mood: MOOD_UNKNOWN
+      number: NUMBER_UNKNOWN
+      person: PERSON_UNKNOWN
+      proper: PROPER_UNKNOWN
+      reciprocity: RECIPROCITY_UNKNOWN
+      tense: TENSE_UNKNOWN
+      voice: VOICE_UNKNOWN
+    dependencyEdge:
+      headTokenIndex: 3
+      label: DET
+    lemma: a
+  -
+    text:
+      content: walk
+      beginOffset: 12
+    partOfSpeech:
+      tag: NOUN
+      aspect: ASPECT_UNKNOWN
+      case: CASE_UNKNOWN
+      form: FORM_UNKNOWN
+      gender: GENDER_UNKNOWN
+      mood: MOOD_UNKNOWN
+      number: SINGULAR
+      person: PERSON_UNKNOWN
+      proper: PROPER_UNKNOWN
+      reciprocity: RECIPROCITY_UNKNOWN
+      tense: TENSE_UNKNOWN
+      voice: VOICE_UNKNOWN
+    dependencyEdge:
+      headTokenIndex: 1
+      label: DOBJ
+    lemma: walk
+  -
+    text:
+      content: .
+      beginOffset: 16
+    partOfSpeech:
+      tag: PUNCT
+      aspect: ASPECT_UNKNOWN
+      case: CASE_UNKNOWN
+      form: FORM_UNKNOWN
+      gender: GENDER_UNKNOWN
+      mood: MOOD_UNKNOWN
+      number: NUMBER_UNKNOWN
+      person: PERSON_UNKNOWN
+      proper: PROPER_UNKNOWN
+      reciprocity: RECIPROCITY_UNKNOWN
+      tense: TENSE_UNKNOWN
+      voice: VOICE_UNKNOWN
+    dependencyEdge:
+      headTokenIndex: 1
+      label: P
+    lemma: .
+language: en
+entities: {  }
 EOF
             )
             ->addArgument(
