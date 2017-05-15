@@ -27,46 +27,5 @@ use Google\Cloud\NaturalLanguage\Annotation;
  */
 function annotation_to_string(Annotation $annotation)
 {
-    $ret = '';
-    $info = $annotation->info();
-    if (isset($info['language'])) {
-        $ret .= sprintf('language: %s' . PHP_EOL, $info['language']);
-    }
-
-    if (isset($info['documentSentiment'])) {
-        $magnitude = $info['documentSentiment']['magnitude'];
-        $score = $info['documentSentiment']['score'];
-        $ret .= sprintf('sentiment magnitude: %s score: %s' . PHP_EOL,
-            $magnitude, $score);
-    }
-
-    if (isset($info['sentences'])) {
-        $ret .= 'sentences:' . PHP_EOL;
-        foreach ($info['sentences'] as $sentence) {
-            $ret .= sprintf('  %s: %s' . PHP_EOL,
-                $sentence['text']['beginOffset'],
-                $sentence['text']['content']);
-        }
-    }
-
-    if (isset($info['tokens'])) {
-        $ret .= 'tokens:' . PHP_EOL;
-        foreach ($info['tokens'] as $token) {
-            $ret .= sprintf('  %s: %s' . PHP_EOL,
-                $token['lemma'],
-                $token['partOfSpeech']['tag']);
-        }
-    }
-
-    if (isset($info['entities'])) {
-        $ret .= 'entities:' . PHP_EOL;
-        foreach ($info['entities'] as $entity) {
-            $ret .= sprintf('  %s', $entity['name']);
-            if (isset($entity['metadata']['wikipedia_url'])) {
-                $ret .= sprintf(': %s', $entity['metadata']['wikipedia_url']);
-            }
-            $ret .= PHP_EOL;
-        }
-    }
-    return $ret;
+    return var_export($annotation->info(), true);
 }

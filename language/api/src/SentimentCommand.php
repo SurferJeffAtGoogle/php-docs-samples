@@ -41,6 +41,33 @@ The <info>%command.name%</info> command analyzes text using the Google Cloud Nat
 
     <info>php %command.full_name% gs://my_bucket/file_with_text.txt</info>
 
+Example:
+    <info>php %command.full_name% "John took a walk."</info>
+
+array (
+  'documentSentiment' => 
+  array (
+    'magnitude' => 0,
+    'score' => 0,
+  ),
+  'language' => 'en',
+  'sentences' => 
+  array (
+    0 => 
+    array (
+      'text' => 
+      array (
+        'content' => 'John took a walk.',
+        'beginOffset' => 0,
+      ),
+      'sentiment' => 
+      array (
+        'magnitude' => 0,
+        'score' => 0,
+      ),
+    ),
+  ),
+)
 EOF
             )
             ->addArgument(
