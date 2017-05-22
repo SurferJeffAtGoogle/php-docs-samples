@@ -29,28 +29,12 @@ use Symfony\Component\Console\Output\OutputInterface;
  */
 class DetectFaceCommand extends Command
 {
-    private $imageCreateFunc = [
-        'png' => 'imagecreatefrompng',
-        'gd' => 'imagecreatefromgd',
-        'gif' => 'imagecreatefromgif',
-        'jpg' => 'imagecreatefromjpeg',
-        'jpeg' => 'imagecreatefromjpeg',
-    ];
-
-    private $imageWriteFunc = [
-        'png' => 'imagepng',
-        'gd' => 'imagegd',
-        'gif' => 'imagegif',
-        'jpg' => 'imagejpeg',
-        'jpeg' => 'imagejpeg',
-    ];
-
     protected function configure()
     {
         $this
             ->setName('face')
-            ->setDescription('Detect faces in an image using '
-                . 'Google Cloud Vision API')
+            ->setDescription('Detect faces in video '
+                . 'Google Cloud Video Intelligence API')
             ->setHelp(<<<EOF
 The <info>%command.name%</info> command finds faces in an image using
 the Google Cloud Vision API.
@@ -60,34 +44,17 @@ the Google Cloud Vision API.
 EOF
             )
             ->addArgument(
-                'path',
+                'uri',
                 InputArgument::REQUIRED,
-                'The image to examine.'
-            )
-            ->addArgument(
-                'output',
-                InputArgument::OPTIONAL,
-                'The output image with bounding boxes.'
-            )
-            ->addOption(
-                'project',
-                'p',
-                InputOption::VALUE_REQUIRED,
-                'Your Project ID.'
+                'Uri pointing to a video.'
             )
         ;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $projectId = $input->getOption('project');
-        $path = $input->getArgument('path');
-        if (preg_match('/^gs:\/\/([a-z0-9\._\-]+)\/(\S+)$/', $path, $matches)) {
-            list($bucketName, $objectName) = array_slice($matches, 1);
-            $result = require __DIR__ . '/snippets/detect_face_gcs.php';
-        } else {
-            $result = require __DIR__ . '/snippets/detect_face.php';
-        }
+        $uri = $input->getArgument('uri');
+        $result = require __DIR__ . '/snippets/detect_face.php';
         if (
             isset($result->info()['faceAnnotations'])
             && $outFile = $input->getArgument('output')

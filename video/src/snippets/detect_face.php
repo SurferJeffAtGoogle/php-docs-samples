@@ -20,24 +20,18 @@ namespace Google\Cloud\Samples\Vision;
 
 # [START face_detection]
 # [START get_vision_service]
-use Google\Cloud\Vision\VisionClient;
+use Google\Cloud\VideoIntelligence\V1beta1\VideoIntelligenceServiceClient;
+use google\cloud\videointelligence\v1beta1\Feature;
 
-// $projectId = 'YOUR_PROJECT_ID';
-// $path = 'path/to/your/image.jpg'
+$video = new VideoIntelligenceServiceClient();
+$features = [Feature::FACE_DETECTION];
 
-$vision = new VisionClient([
-    'projectId' => $projectId,
-]);
-# [END get_vision_service]
-# [START detect_face]
-$image = $vision->image(file_get_contents($path), ['FACE_DETECTION']);
-$result = $vision->annotate($image);
-# [END detect_face]
-print("Faces:\n");
-foreach ((array) $result->faces() as $face) {
-    printf("Anger: %s\n", $face->isAngry() ? 'yes' : 'no');
-    printf("Joy: %s\n", $face->isJoyful() ? 'yes' : 'no');
-    printf("Surprise: %s\n\n", $face->isSurprised() ? 'yes' : 'no');
+$operationResponse = $video->annotateVideo($uri, $features);
+$operationResponse->pollUntilComplete();
+if ($operationResponse->operationSucceeded()) {
+    $result = $operationResponse->getResult();
+    // doSomethingWith($result)
+} else {
+    $error = $operationResponse->getError();
+    // handleError($error)
 }
-# [END face_detection]
-return $result;
