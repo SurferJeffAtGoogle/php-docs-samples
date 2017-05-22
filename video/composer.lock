@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "8e028fa26af35a90afc4776ca664be59",
+    "content-hash": "359b6001e9e73a85647e76330904b0ae",
     "packages": [
         {
             "name": "firebase/php-jwt",
@@ -180,6 +180,46 @@
             "time": "2017-03-31T16:47:15+00:00"
         },
         {
+            "name": "google/cloud-videointelligence",
+            "version": "v0.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/GoogleCloudPlatform/google-cloud-php-videointelligence.git",
+                "reference": "2fbccdb1492568a6c603829389c9b17f8687544a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/GoogleCloudPlatform/google-cloud-php-videointelligence/zipball/2fbccdb1492568a6c603829389c9b17f8687544a",
+                "reference": "2fbccdb1492568a6c603829389c9b17f8687544a",
+                "shasum": ""
+            },
+            "require": {
+                "ext-grpc": "*",
+                "google/gax": "^0.9",
+                "google/proto-client-php": "^0.13"
+            },
+            "type": "library",
+            "extra": {
+                "component": {
+                    "id": "cloud-videointelligence",
+                    "target": "GoogleCloudPlatform/google-cloud-php-videointelligence.git",
+                    "path": "src/VideoIntelligence",
+                    "entry": null
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Google\\Cloud\\VideoIntelligence\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "description": "Cloud Video Intelligence Client for PHP",
+            "time": "2017-05-22T19:03:05+00:00"
+        },
+        {
             "name": "google/cloud-vision",
             "version": "v0.2.0",
             "source": {
@@ -219,6 +259,128 @@
             ],
             "description": "Cloud Vision Client for PHP",
             "time": "2017-03-31T16:47:15+00:00"
+        },
+        {
+            "name": "google/gax",
+            "version": "0.9.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/gax-php.git",
+                "reference": "c642f11791e5d05d44e22dd900b94776f20436ec"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/gax-php/zipball/c642f11791e5d05d44e22dd900b94776f20436ec",
+                "reference": "c642f11791e5d05d44e22dd900b94776f20436ec",
+                "shasum": ""
+            },
+            "require": {
+                "google/auth": "^0.11",
+                "grpc/grpc": "v1.0.*",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpdocumentor/phpdocumentor": "*",
+                "phpunit/phpunit": "4.8.*",
+                "squizlabs/php_codesniffer": "2.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Google\\GAX\\": "src/",
+                    "Google\\GAX\\UnitTests\\": "tests/"
+                },
+                "classmap": [
+                    "src/generated",
+                    "src/generated/well-known-types"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Google API Extensions for PHP",
+            "homepage": "https://github.com/googleapis/gax-php",
+            "keywords": [
+                "google"
+            ],
+            "time": "2017-05-17T17:44:53+00:00"
+        },
+        {
+            "name": "google/proto-client-php",
+            "version": "0.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/googleapis/proto-client-php.git",
+                "reference": "4f5c094612a066ffabd58fac44a6af8837bca01e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/googleapis/proto-client-php/zipball/4f5c094612a066ffabd58fac44a6af8837bca01e",
+                "reference": "4f5c094612a066ffabd58fac44a6af8837bca01e",
+                "shasum": ""
+            },
+            "require": {
+                "grpc/grpc": "v1.0.*",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpdocumentor/phpdocumentor": "^2.9"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "Generated proto and gRPC classes for Google Cloud Platform in PHP",
+            "homepage": "https://github.com/googleapis/proto-client-php",
+            "keywords": [
+                "google"
+            ],
+            "time": "2017-05-17T20:13:43+00:00"
+        },
+        {
+            "name": "grpc/grpc",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/grpc/grpc.git",
+                "reference": "6040b471bcd1d6bb05b25c126b6545180a1d3528"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/grpc/grpc/zipball/6040b471bcd1d6bb05b25c126b6545180a1d3528",
+                "reference": "6040b471bcd1d6bb05b25c126b6545180a1d3528",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0",
+                "stanley-cheung/protobuf-php": "v0.6"
+            },
+            "require-dev": {
+                "google/auth": "v0.9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Grpc\\": "src/php/lib/Grpc/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "description": "gRPC library for PHP",
+            "homepage": "http://grpc.io",
+            "keywords": [
+                "rpc"
+            ],
+            "time": "2016-10-27T22:05:26+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -662,6 +824,58 @@
                 "uri"
             ],
             "time": "2017-02-21T15:25:22+00:00"
+        },
+        {
+            "name": "stanley-cheung/protobuf-php",
+            "version": "v0.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/stanley-cheung/Protobuf-PHP.git",
+                "reference": "e5d3b55b1898233e36abb552281d2dd0ce86c5e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/stanley-cheung/Protobuf-PHP/zipball/e5d3b55b1898233e36abb552281d2dd0ce86c5e7",
+                "reference": "e5d3b55b1898233e36abb552281d2dd0ce86c5e7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "bin": [
+                "protoc-gen-php.bat",
+                "protoc-gen-php.php"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "DrSlump": "library/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Iván -DrSlump- Montes",
+                    "email": "drslump@pollinimini.net",
+                    "homepage": "https://github.com/drslump/Protobuf-PHP"
+                }
+            ],
+            "description": "PHP implementation of Google's Protocol Buffers",
+            "homepage": "https://github.com/stanley-cheung/Protobuf-PHP",
+            "keywords": [
+                "protobuf",
+                "protocol buffer",
+                "serializing"
+            ],
+            "time": "2016-07-22T02:12:15+00:00"
         },
         {
             "name": "symfony/console",
