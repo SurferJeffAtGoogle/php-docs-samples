@@ -88,3 +88,16 @@ Yay.  New error!
     
 Filed issue https://github.com/grpc/grpc/issues/11232
 
+
+Tried switching gears and using [phpenv](https://github.com/phpenv/phpenv).
+But it malfunctioned and listed no useful releases:
+
+```sh
+rennie@rennie:~/gitrepos/grpc$ phpenv install --releases
+phpenv v0.0.4-dev
+
+                    init extensions  the cloning of repositories for additional extensions           
+```
+
+
+
