@@ -99,5 +99,13 @@ phpenv v0.0.4-dev
                     init extensions  the cloning of repositories for additional extensions           
 ```
 
+VideoIntelligenceServiceClient and Feature live in two different namespaces and two different
+source files.  It took me about 10 minutes to find what values I can pass to the features
+argument.
+
+```
+use Google\Cloud\VideoIntelligence\V1beta1\VideoIntelligenceServiceClient;
+use google\cloud\videointelligence\v1beta1\Feature;
+```
 
 
