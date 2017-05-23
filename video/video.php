@@ -43,10 +43,13 @@ EOF
         InputArgument::REQUIRED,
         'Uri pointing to a video.'
     )
-    ->setCode(function ($input, $output) {
+    ->setCode(function (InputInterface $input, OutputInterface $output) {
         $uri = $input->getArgument('uri');
         $result = require __DIR__ . '/src/detect_face.php';
     });
 
-
+// for testing
+if (getenv('PHPUNIT_TESTS') === '1') {
+    return $application;
+}
 $application->run();
