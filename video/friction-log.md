@@ -121,3 +121,4 @@ use google\cloud\videointelligence\v1beta1\Feature;
 
 They seem to conflict.  Should my uri begin with gs:// or http://?
 
+### Request contains an invalid argument.
