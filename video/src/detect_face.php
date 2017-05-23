@@ -15,32 +15,21 @@
  * limitations under the License.
  */
 
+
 namespace Google\Cloud\Samples\Vision;
 
-# [START detect_labels]
-# [START import_libraries]
-use Google\Cloud\Vision\VisionClient;
+use Google\Cloud\VideoIntelligence\V1beta1\VideoIntelligenceServiceClient;
+use google\cloud\videointelligence\v1beta1\Feature;
 
-# [END import_libraries]
+$video = new VideoIntelligenceServiceClient();
+$features = [Feature::FACE_DETECTION];
 
-// $projectId = 'YOUR_PROJECT_ID';
-// $path = 'path/to/your/image.jpg'
-
-# [START authenticate]
-$vision = new VisionClient([
-    'projectId' => $projectId,
-]);
-# [END authenticate]
-
-# [START construct_request]
-$image = $vision->image(file_get_contents($path), ['LABEL_DETECTION']);
-$result = $vision->annotate($image);
-# [END construct_request]
-
-# [START parse_response]
-print("LABELS:\n");
-foreach ($result->labels() as $label) {
-    print($label->description() . PHP_EOL);
+$operationResponse = $video->annotateVideo($uri, $features);
+$operationResponse->pollUntilComplete();
+if ($operationResponse->operationSucceeded()) {
+    $result = $operationResponse->getResult();
+    // doSomethingWith($result)
+} else {
+    $error = $operationResponse->getError();
+    // handleError($error)
 }
-# [END parse_response]
-# [END detect_labels]
