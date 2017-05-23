@@ -48,7 +48,7 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         $commandTester = new CommandTester(self::$application->get('face'));
         $commandTester->execute(
             [
-                'uri' => __DIR__ . 'gs://cloudmleap/video/next/fox-snatched.mp4',
+                'uri' => 'gs://cloudmleap/video/next/fox-snatched.mp4',
             ],
             ['interactive' => false]
         );
