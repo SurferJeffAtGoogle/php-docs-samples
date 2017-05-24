@@ -43,9 +43,9 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testFaceCommand()
+    public function testShotsCommand()
     {
-        $commandTester = new CommandTester(self::$application->get('face'));
+        $commandTester = new CommandTester(self::$application->get('shots'));
         $commandTester->execute(
             [
                 'uri' => 'gs://cloudmleap/video/next/fox-snatched.mp4',
@@ -54,8 +54,8 @@ class CommandTest extends \PHPUnit_Framework_TestCase
         );
         $this->assertEquals(0, $commandTester->getStatusCode());
         $display = $this->getActualOutput();
-        $this->assertContains('Anger: ', $display);
-        $this->assertContains('Joy: ', $display);
-        $this->assertContains('Surprise: ', $display);
+        $this->assertContains('shot_annotations', $display);
+        $this->assertContains('start_time_offset:', $display);
+        $this->assertContains('end_time_offset:', $display);
     }
 }

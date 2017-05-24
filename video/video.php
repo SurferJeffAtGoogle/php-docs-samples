@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+namespace Google\Cloud\Samples\Video;
+
 require __DIR__ . '/vendor/autoload.php';
 
 use Symfony\Component\Console\Application;
@@ -26,18 +28,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 $application = new Application();
 
-$application->add(new Command('face'))
-    ->setName('face')
+$application->add(new Command('shots'))
     ->setDescription('Detect faces in video '
         . 'Google Cloud Video Intelligence API')
     ->setHelp(<<<EOF
-The <info>%command.name%</info> command finds faces in an image using
-the Google Cloud Vision API.
+The <info>%command.name%</info> command finds shot changes in a video using the 
+Google Cloud Video Intelligence API.
 
-    <info>php %command.full_name% -k YOUR-API-KEY path/to/image.png</info>
-
+    <info>php %command.full_name% path/to/image.png</info>
 EOF
-    )
+)
     ->addArgument(
         'uri',
         InputArgument::REQUIRED,
@@ -45,7 +45,7 @@ EOF
     )
     ->setCode(function (InputInterface $input, OutputInterface $output) {
         $uri = $input->getArgument('uri');
-        $result = require __DIR__ . '/src/detect_face.php';
+        analyze_shots($uri);
     });
 
 // for testing
