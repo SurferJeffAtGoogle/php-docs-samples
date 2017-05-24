@@ -29,7 +29,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 $application = new Application();
 
 $application->add(new Command('shots'))
-    ->setDescription('Detect faces in video '
+    ->setDescription('Detect shot changes in video using '
         . 'Google Cloud Video Intelligence API')
     ->setHelp(<<<EOF
 The <info>%command.name%</info> command finds shot changes in a video using the 
